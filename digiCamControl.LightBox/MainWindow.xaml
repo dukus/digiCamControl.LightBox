@@ -11,7 +11,7 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="740" Width="1360">
     <Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </Window.DataContext>
@@ -37,6 +37,7 @@
                                      Grid.Row="5" Grid.Column="0"
                                      VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12 12 12 12">
                     <StackPanel Orientation="Vertical">
+
                         <!--<ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"  Value="50" IsIndeterminate="True" />
                         <Label Content="{translation:Translate Processing}"/>-->
                     </StackPanel>
@@ -50,7 +51,7 @@
                                       HorizontalAlignment="Right" Margin="16"
                                       IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                         <StackPanel>
-                          </StackPanel>
+                        </StackPanel>
 
                     </DockPanel>
                 </materialDesign:DrawerHost.LeftDrawerContent>
@@ -58,7 +59,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="295*"/>
-                        <RowDefinition Height="Auto"/>                        
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
                                               Mode="PrimaryDark">
@@ -67,14 +68,19 @@
                                           x:Name="MenuToggleButton"/>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Margin="30,5" Text="{Binding Title}"/>
                             <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" >
-
+                                <Grid>
+                                    <ProgressBar Height="{Binding ElementName=CameraComboBox,Path=ActualHeight}" Value="{Binding  CameraDevice.TransferProgress}" Minimum="0" Maximum="100" Visibility="{Binding TransferInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <ComboBox Name="CameraComboBox" ItemsSource="{Binding DeviceManager.ConnectedDevices}" SelectedItem="{Binding DeviceManager.SelectedCameraDevice}" DisplayMemberPath="DisplayName" Width="150"/>
+                                </Grid>
                             </StackPanel>
                         </DockPanel>
                     </materialDesign:ColorZone>
                     <ContentControl  Content="{Binding ContentControl}" Grid.Row="1"/>
-                    <StatusBar Grid.Row="2">
+                    <!--<StatusBar Grid.Row="2">
+
+                        <Separator/>
                         <ProgressBar Width="40" Margin="5" Height="10" Minimum="0" Maximum="100" Value="{Binding CameraDevice.Battery}" Visibility="{Binding IsCameraConnected, Converter={StaticResource BooleanToVisibilityConverter}}" ToolTip="{Binding CameraDevice.Battery}"  Foreground="#35CA75" BorderBrush="Black" BorderThickness="0" Padding="1"/> 
-                    </StatusBar>
+                    </StatusBar>-->
                 </Grid>
             </materialDesign:DrawerHost>
         </materialDesign:DialogHost>

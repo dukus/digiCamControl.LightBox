@@ -13,7 +13,11 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Combobox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
             <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type controls:MoveThumb}">
                 <Rectangle Fill="Transparent"/>
             </ControlTemplate>
@@ -44,27 +48,49 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="133*"/>
             <RowDefinition Height="17*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card HorizontalAlignment="Left" Margin="24,16">
+        <materialDesign:Card Grid.RowSpan="2" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Stretch">
             <StackPanel Orientation="Vertical">
-                <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="8" Grid.Row="2" Command="{Binding NextCommand}">
+
+                <ItemsControl ItemsSource="{Binding PanelItems }" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="{Binding Name}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding NextCommand}">
+                                <materialDesign:PackIcon Kind="{Binding Icon, Converter={StaticResource StringToIconConverter} }" Height="24" Width="24" />
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                
+                <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Grid.Row="2" Command="{Binding NextCommand}">
                     <materialDesign:PackIcon Kind="ViewCarousel" Height="24" Width="24" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="8" Grid.Row="2" Command="{Binding NextCommand}">
+                <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Grid.Row="2" Command="{Binding NextCommand}">
                     <materialDesign:PackIcon Kind="CameraIris" Height="24" Width="24" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="8" Grid.Row="2" Command="{Binding NextCommand}">
+                <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Grid.Row="2" Command="{Binding NextCommand}">
                     <materialDesign:PackIcon Kind="CropLandscape" Height="24" Width="24" />
                 </Button>
 
             </StackPanel>
         </materialDesign:Card>
+        <ContentControl  Content="{Binding PanelControl}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" />
 
-        <Image Source="{Binding BitmapSource}" Name="_image"/>
-        <Viewbox Stretch="Fill" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=_image}" Height="{Binding ActualHeight, ElementName=_image}">
+        <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Name="_image"/>
+        <Viewbox Grid.Row="0" Grid.Column="2" Stretch="Fill" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=_image}" Height="{Binding ActualHeight, ElementName=_image}">
             <Canvas Width="1000" Height="1000">
                 <Path Fill="#80000000">
                     <Path.Data>
@@ -78,7 +104,7 @@
                         </CombinedGeometry>
                     </Path.Data>
                 </Path>
-                <ContentControl Width="{Binding CropWidth, Mode=TwoWay}"
+                <ContentControl  Width="{Binding CropWidth, Mode=TwoWay}"
                                 Height="{Binding CropHeight, Mode=TwoWay}"
                                 Canvas.Top="{Binding CropY, Mode=TwoWay}"
                                 Canvas.Left="{Binding CropX, Mode=TwoWay}"
@@ -87,6 +113,6 @@
                 </ContentControl>
             </Canvas>
         </Viewbox>
-        <ListBox Grid.Row="1" ItemsSource="{Binding Session.Files}" ></ListBox>
+        <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Session.Files}" ></ListBox>
     </Grid>
 </UserControl>

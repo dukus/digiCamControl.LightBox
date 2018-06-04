@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using Canon.Eos.Framework;
 using digiCamControl.LightBox.Classes;
+using digiCamControl.LightBox.Core.Interfaces;
+using digiCamControl.LightBox.Plugins;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace digiCamControl.LightBox.ViewModels
 {
@@ -23,6 +28,20 @@ namespace digiCamControl.LightBox.ViewModels
         private int _cropWidth;
         private int _cropY;
         private int _cropHeight;
+        private ContentControl _panelControl;
+
+
+        public List<IPanelItem> PanelItems { get; set; }
+
+        public ContentControl PanelControl
+        {
+            get { return _panelControl; }
+            set
+            {
+                _panelControl = value;
+                RaisePropertyChanged(()=>PanelControl);
+            }
+        }
 
 
         public BitmapSource BitmapSource
@@ -82,6 +101,7 @@ namespace digiCamControl.LightBox.ViewModels
         public Rect CropRect => new Rect(CropX, CropY, CropWidth, CropHeight);
         public ICameraDevice CameraDevice => ServiceProvider.Instance.DeviceManager.SelectedCameraDevice;
         public Session Session => ServiceProvider.Instance.Session;
+        public RelayCommand<IPanelItem> ItemCommand { get; set; }
 
 
         public CaptureViewModel()
@@ -93,6 +113,14 @@ namespace digiCamControl.LightBox.ViewModels
             CropY = 400;
             CropWidth = 200;
             CropHeight= 200;
+            PanelItems = new List<IPanelItem>();
+            PanelItems.Add(new LiveViewPanel());
+            ItemCommand=new RelayCommand<IPanelItem>(ExecuteItem);
+        }
+
+        private void ExecuteItem(IPanelItem obj)
+        {
+            
         }
 
         private void _Livetimer_Tick(object sender, EventArgs e)

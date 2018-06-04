@@ -153,6 +153,7 @@
       <DependentUpon>StartView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewEnum.cs" />
+    <Compile Include="Wpf\StringToIconConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -214,6 +215,10 @@
     <ProjectReference Include="..\digiCamControl.LightBox.Core\digiCamControl.LightBox.Core.csproj">
       <Project>{530042f8-d7fc-4501-94c5-b3fd60b1dfd2}</Project>
       <Name>digiCamControl.LightBox.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\digiCamControl.LightBox.Plugins\digiCamControl.LightBox.Plugins.csproj">
+      <Project>{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}</Project>
+      <Name>digiCamControl.LightBox.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

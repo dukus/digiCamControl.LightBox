@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "digiCamControl.LightBox.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{DA0D06E4-E871-44F1-8FF4-A91EB5692A1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "digiCamControl.LightBox.Plugins", "digiCamControl.LightBox.Plugins\digiCamControl.LightBox.Plugins.csproj", "{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DA0D06E4-E871-44F1-8FF4-A91EB5692A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA0D06E4-E871-44F1-8FF4-A91EB5692A1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA0D06E4-E871-44F1-8FF4-A91EB5692A1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

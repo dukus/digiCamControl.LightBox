@@ -10,7 +10,7 @@ using System.Windows.Threading;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using Canon.Eos.Framework;
-using digiCamControl.LightBox.Classes;
+using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Plugins;
 using GalaSoft.MvvmLight;
@@ -29,6 +29,7 @@ namespace digiCamControl.LightBox.ViewModels
         private int _cropY;
         private int _cropHeight;
         private ContentControl _panelControl;
+        private FileItem _selectedItem;
 
 
         public List<IPanelItem> PanelItems { get; set; }
@@ -40,6 +41,18 @@ namespace digiCamControl.LightBox.ViewModels
             {
                 _panelControl = value;
                 RaisePropertyChanged(()=>PanelControl);
+            }
+        }
+
+        public FileItem SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                RaisePropertyChanged(() => SelectedItem);
+                if(SelectedItem!=null)
+                    LoadImage();
             }
         }
 
@@ -115,12 +128,79 @@ namespace digiCamControl.LightBox.ViewModels
             CropHeight= 200;
             PanelItems = new List<IPanelItem>();
             PanelItems.Add(new LiveViewPanel());
-            ItemCommand=new RelayCommand<IPanelItem>(ExecuteItem);
+            PanelItems.Add(new CapturePanel());
+            PanelItems.Add(new CropPanel());
+            PanelItems.Add(new CameraPanel());
+            ItemCommand =new RelayCommand<IPanelItem>(ExecuteItem);
+            if (!IsInDesignMode)
+                ServiceProvider.Instance.Message += Instance_Message;
+        }
+
+        private void LoadImage()
+        {
+            try
+            {
+                if (File.Exists(SelectedItem.TempFile))
+                {
+                    ServiceProvider.Instance.OnMessage(Messages.StopLiveView);
+                    BitmapSource = Utils.LoadImage(SelectedItem.TempFile, 1092);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Debug("Unable to load image",e);
+            }
+        }
+
+        private void Instance_Message(object sender, MessageArgs message)
+        {
+            try
+            {
+                switch (message.Message)
+                {
+                    case Messages.ImageCaptured:
+                    {
+                        FileItem item = new FileItem(message.ParamString);
+                        Session.Files.Add(item);
+                        SelectedItem = item;
+                    }
+                        break;
+                    case Messages.StopLiveView:
+                    {
+                        StopLiveViewThread();
+                    }
+                        break;
+                    case Messages.StartLiveView:
+                    {
+                        StartLiveViewThread();
+                    }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Message processing error", e);
+            }
         }
 
         private void ExecuteItem(IPanelItem obj)
         {
-            
+            try
+            {
+                if (obj.Panel != null)
+                {
+                    PanelControl = obj.Panel;
+                }
+                else
+                {
+                    PanelControl = null;
+                    obj.Execute();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Eecute error", e);
+            }
         }
 
         private void _Livetimer_Tick(object sender, EventArgs e)

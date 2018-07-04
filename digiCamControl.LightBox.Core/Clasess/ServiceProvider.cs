@@ -7,7 +7,7 @@ using log4net.Appender;
 using log4net.Config;
 using log4net.Layout;
 
-namespace digiCamControl.LightBox.Classes
+namespace digiCamControl.LightBox.Core.Clasess
 {
     public class ServiceProvider
     {

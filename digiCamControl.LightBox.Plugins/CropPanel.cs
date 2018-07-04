@@ -4,21 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 
 namespace digiCamControl.LightBox.Plugins
 {
-    public class LiveViewPanel:IPanelItem
+    public class CropPanel: IPanelItem
     {
-        public string Name => "Live View";
-        public string Id => "{4711ADD7-310F-454D-A647-1E48F24E067B}";
-        public string Icon => "ViewCarousel";
+        public CropPanel()
+        {
+            Panel = new CropPanelView();
+        }
+
+        public string Name => "Crop";
+        public string Id => "{2F72798A-00B9-4F42-9227-1E1C49498663}";
+        public string Icon => "CropLandscape";
         public ContentControl Panel { get; }
+
         public bool Execute()
         {
-            ServiceProvider.Instance.OnMessage(Messages.StartLiveView);
-            return true;
+            throw new NotImplementedException();
         }
     }
 }

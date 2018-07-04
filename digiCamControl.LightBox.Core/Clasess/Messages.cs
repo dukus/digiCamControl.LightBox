@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace digiCamControl.LightBox.Classes
+﻿namespace digiCamControl.LightBox.Core.Clasess
 {
     public class Messages
     {
@@ -12,5 +6,8 @@ namespace digiCamControl.LightBox.Classes
         public const string SetBusy = "SetBusy";
         public const string ClearBusy = "ClearBusy";
         public const string Message = "Message";
+        public const string ImageCaptured = "ImageCaptured";
+        public const string StopLiveView = "StopLiveView";
+        public const string StartLiveView = "StartLiveView";
     }
 }

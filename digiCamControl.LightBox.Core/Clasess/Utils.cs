@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
-namespace digiCamControl.LightBox.Classes
+namespace digiCamControl.LightBox.Core.Clasess
 {
     public class Utils
     {
@@ -51,6 +48,19 @@ namespace digiCamControl.LightBox.Classes
 
             //file is not locked
             return false;
+        }
+
+        public static BitmapSource LoadImage(string filename, int width = 0)
+        {
+            var bi = new BitmapImage();
+            bi.BeginInit();
+            if (width > 0)
+                bi.DecodePixelWidth = width;
+            bi.CacheOption = BitmapCacheOption.OnLoad;
+            bi.UriSource = new Uri(filename);
+            bi.EndInit();
+            bi.Freeze();
+            return bi;
         }
     }
 }

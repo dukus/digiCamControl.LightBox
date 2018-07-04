@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
-using digiCamControl.LightBox.Classes;
+using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
 
@@ -85,35 +85,35 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void DeviceManager_PhotoCaptured(object sender, CameraControl.Devices.Classes.PhotoCapturedEventArgs eventArgs)
         {
-            var randomName = Path.GetRandomFileName() + Path.GetExtension(eventArgs.FileName);
-            string tempFile = Path.Combine(Settings.Instance.TempFolder, randomName);
+            //var randomName = Path.GetRandomFileName() + Path.GetExtension(eventArgs.FileName);
+            //string tempFile = Path.Combine(Settings.Instance.TempFolder, randomName);
 
-            try
-            {
-                TransferInProgress = true;
-                Utils.CreateFolder(tempFile);
+            //try
+            //{
+            //    TransferInProgress = true;
+            //    Utils.CreateFolder(tempFile);
 
-                Log.Debug("Transfer started");
-                eventArgs.CameraDevice.TransferFile(eventArgs.Handle, tempFile);
-                Log.Debug("Transfer finished " + tempFile);
+            //    Log.Debug("Transfer started");
+            //    eventArgs.CameraDevice.TransferFile(eventArgs.Handle, tempFile);
+            //    Log.Debug("Transfer finished " + tempFile);
 
-                Utils.WaitForFile(tempFile);
+            //    Utils.WaitForFile(tempFile);
 
-                eventArgs.CameraDevice.DeleteObject(new DeviceObject() { Handle = eventArgs.Handle });
-                eventArgs.CameraDevice.ReleaseResurce(eventArgs.Handle);
+            //    eventArgs.CameraDevice.DeleteObject(new DeviceObject() { Handle = eventArgs.Handle });
+            //    eventArgs.CameraDevice.ReleaseResurce(eventArgs.Handle);
 
-                Log.Debug("Transfer prodedure finished ");
-                if (eventArgs.CameraDevice != null)
-                {
-                    eventArgs.CameraDevice.IsBusy = false;
-                    eventArgs.CameraDevice.TransferProgress = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error transfer file", ex);
-            }
-            TransferInProgress = false;
+            //    Log.Debug("Transfer prodedure finished ");
+            //    if (eventArgs.CameraDevice != null)
+            //    {
+            //        eventArgs.CameraDevice.IsBusy = false;
+            //        eventArgs.CameraDevice.TransferProgress = 0;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error("Error transfer file", ex);
+            //}
+            //TransferInProgress = false;
         }
 
         private void Instance_Message(object sender, MessageArgs message)

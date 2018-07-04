@@ -1,4 +1,4 @@
-﻿namespace digiCamControl.LightBox.Classes
+﻿namespace digiCamControl.LightBox.Core.Clasess
 {
     public class MessageArgs
     {

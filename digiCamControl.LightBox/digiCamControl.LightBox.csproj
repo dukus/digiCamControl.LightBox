@@ -36,13 +36,47 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CameraControl.Devices, Version=2.0.73.5, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\CameraControl.Devices.2.0.73-beta\lib\net46\CameraControl.Devices.dll</HintPath>
+    <Reference Include="Accord, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.3.8.2-alpha\lib\net46\Accord.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Canon.Eos.Framework, Version=2.0.73.5, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="Accord.Video, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Video.3.8.2-alpha\lib\net46\Accord.Video.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Accord.Video.DirectShow, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Video.DirectShow.3.8.2-alpha\lib\net46\Accord.Video.DirectShow.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CameraControl.Devices, Version=2.0.77.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\CameraControl.Devices.2.0.73-beta\lib\net46\CameraControl.Devices.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Canon.Eos.Framework, Version=2.0.77.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\packages\CameraControl.Devices.2.0.73-beta\lib\net46\Canon.Eos.Framework.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -134,13 +168,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\FileItem.cs" />
-    <Compile Include="Classes\MessageArgs.cs" />
-    <Compile Include="Classes\Messages.cs" />
-    <Compile Include="Classes\ServiceProvider.cs" />
-    <Compile Include="Classes\Session.cs" />
-    <Compile Include="Classes\Settings.cs" />
-    <Compile Include="Classes\Utils.cs" />
     <Compile Include="Controls\MoveThumb.cs" />
     <Compile Include="Controls\ResizeThumb.cs" />
     <Compile Include="ViewModels\CaptureViewModel.cs" />
@@ -221,6 +248,9 @@
       <Name>digiCamControl.LightBox.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets" Condition="Exists('..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -228,7 +258,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets'))" />
+    <Error Condition="!Exists('..\packages\Accord.3.8.2-alpha\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.8.2-alpha\build\Accord.targets'))" />
   </Target>
+  <Import Project="..\packages\Accord.3.8.2-alpha\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.2-alpha\build\Accord.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

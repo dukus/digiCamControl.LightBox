@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="digiCamControl.LightBox.Plugins.CameraPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:digiCamControl.LightBox.Plugins"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" Width="200">
+    <UserControl.DataContext>
+        <local:CameraPanelViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Margin="4">
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.Mode}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                          materialDesign:HintAssist.Hint="Mode"
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.ShutterSpeed}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                          materialDesign:HintAssist.Hint="Shutter Speed"
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.FNumber}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                              materialDesign:HintAssist.Hint="Apperture"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.IsoNumber}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                              materialDesign:HintAssist.Hint="Iso"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.WhiteBalance}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                              materialDesign:HintAssist.Hint="White Balance"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <Label Content="Manual focus"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="&lt;&lt;&lt;" Margin="4" Command="{Binding FocusFFFCommand}"/>
+                <Button Content="&lt;&lt;" Margin="4"  Command="{Binding FocusFFCommand}"/>
+                <Button Content="&lt;" Margin="4"  Command="{Binding FocusFCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="&gt;&gt;&gt;" Margin="4"  Command="{Binding FocusNNNCommand}"/>
+                <Button Content="&gt;&gt;" Margin="4"  Command="{Binding FocusNNCommand}"/>
+                <Button Content="&gt;" Margin="4"  Command="{Binding FocusNCommand}"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

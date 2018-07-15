@@ -142,6 +142,7 @@
     <Compile Include="CropPanelView.xaml.cs">
       <DependentUpon>CropPanelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CropPanelViewModel.cs" />
     <Compile Include="LiveViewPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

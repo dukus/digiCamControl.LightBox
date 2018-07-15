@@ -20,25 +20,7 @@ namespace digiCamControl.LightBox.Plugins
         {
             Panel = new CapturePanelView();
             ViewModel = (CapturePanelViewModel) Panel.DataContext;
-            ServiceProvider.Instance.DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
-        }
-
-        private void DeviceManager_PhotoCaptured(object sender, PhotoCapturedEventArgs eventargs)
-        {
-            try
-            {
-                string fileName = Path.Combine(Settings.Instance.TempFolder,
-                    Path.GetRandomFileName() + Path.GetExtension(eventargs.FileName));
-                Utils.CreateFolder(fileName);
-                eventargs.CameraDevice.TransferFile(eventargs.Handle, fileName);
-                eventargs.CameraDevice.DeleteObject(new DeviceObject() { Handle = eventargs.Handle });
-                eventargs.CameraDevice.ReleaseResurce(eventargs.Handle);
-                ServiceProvider.Instance.OnMessage(Messages.ImageCaptured, fileName);
-            }
-            catch (Exception e)
-            {
-                Log.Error("Transfer error ", e);
-            }
+            
         }
 
         public string Name => "Capture";

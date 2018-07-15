@@ -29,10 +29,10 @@
                     <controls:ResizeThumb Width="3" Cursor="SizeWE" Margin="-4 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
                     <controls:ResizeThumb Width="3" Cursor="SizeWE" Margin="0 0 -4 0" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
                     <controls:ResizeThumb Height="3" Cursor="SizeNS" Margin="0 0 0 -4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
-                    <controls:ResizeThumb Width="7" Height="7" Cursor="SizeNWSE" Margin="-6 -6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    <controls:ResizeThumb Width="7" Height="7" Cursor="SizeNESW" Margin="0 -6 -6 0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-                    <controls:ResizeThumb Width="7" Height="7" Cursor="SizeNESW" Margin="-6 0 0 -6" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                    <controls:ResizeThumb Width="7" Height="7" Cursor="SizeNWSE" Margin="0 0 -6 -6" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <controls:ResizeThumb Width="7" Height="10" Cursor="SizeNWSE" Margin="-6 -6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <controls:ResizeThumb Width="7" Height="10" Cursor="SizeNESW" Margin="0 -6 -6 0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <controls:ResizeThumb Width="7" Height="10" Cursor="SizeNESW" Margin="-6 0 0 -6" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <controls:ResizeThumb Width="7" Height="10" Cursor="SizeNWSE" Margin="0 0 -6 -6" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
                 </Grid>
             </ControlTemplate>
 
@@ -58,29 +58,42 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <materialDesign:Card Grid.RowSpan="2" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Stretch">
-            <StackPanel Orientation="Vertical">
+            <Grid>
+                <StackPanel Orientation="Vertical">
 
-                <ItemsControl ItemsSource="{Binding PanelItems }" >
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="{Binding Name}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding ElementName=CaptureViewControl,Path=DataContext.ItemCommand}" CommandParameter="{Binding}">
-                                <materialDesign:PackIcon Kind="{Binding Icon, Converter={StaticResource StringToIconConverter} }" Height="24" Width="24" />
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-               
-            </StackPanel>
+                    <ItemsControl ItemsSource="{Binding PanelItems }" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="{Binding Name}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding ElementName=CaptureViewControl,Path=DataContext.ItemCommand}" CommandParameter="{Binding}">
+                                    <materialDesign:PackIcon Kind="{Binding Icon, Converter={StaticResource StringToIconConverter} }" Height="24" Width="24" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+
+                </StackPanel>
+                <StackPanel VerticalAlignment="Bottom">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" >
+                        <materialDesign:PackIcon Kind="ArrowLeftBold" Height="24" Width="24" />
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" >
+                        <materialDesign:PackIcon Kind="brush" Height="24" Width="24" />
+                    </Button>
+                </StackPanel>
+            </Grid>
         </materialDesign:Card>
-        <ContentControl  Content="{Binding PanelControl}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" />
+
+        <materialDesign:Card Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Margin="4" Visibility="{Binding PanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ContentControl  Content="{Binding PanelControl}" Margin="4"/>
+        </materialDesign:Card>
 
         <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Name="_image"/>
-        <Viewbox Grid.Row="0" Grid.Column="2" Stretch="Fill" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=_image}" Height="{Binding ActualHeight, ElementName=_image}">
+        <Viewbox Grid.Row="0" Grid.Column="2" Stretch="Fill" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=_image}" Height="{Binding ActualHeight, ElementName=_image}" Visibility="{Binding CropVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Canvas Width="1000" Height="1000">
                 <Path Fill="#80000000">
                     <Path.Data>

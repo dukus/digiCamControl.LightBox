@@ -30,6 +30,7 @@ namespace digiCamControl.LightBox.ViewModels
         private int _cropHeight;
         private ContentControl _panelControl;
         private FileItem _selectedItem;
+        private bool _panelVisible;
 
 
         public List<IPanelItem> PanelItems { get; set; }
@@ -63,16 +64,21 @@ namespace digiCamControl.LightBox.ViewModels
             set
             {
                 _bitmapSource = value;
+                if (_bitmapSource != null)
+                {
+                    Session.Variables["CropImageWidth"] = _bitmapSource.PixelWidth;
+                    Session.Variables["CropImageHeight"] = _bitmapSource.PixelHeight;
+                }
                 RaisePropertyChanged(() => BitmapSource);
             }
         }
 
         public int CropX
         {
-            get { return _cropX; }
+            get { return Session.Variables.GetInt("CropX"); }
             set
             {
-                _cropX = value;
+                Session.Variables["CropX"] = value;
                 RaisePropertyChanged(()=>CropX);
                 RaisePropertyChanged(()=>CropRect);
             }
@@ -80,10 +86,10 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropWidth
         {
-            get { return _cropWidth; }
+            get { return Session.Variables.GetInt("CropWidth"); }
             set
             {
-                _cropWidth = value;
+                Session.Variables["CropWidth"] = value;
                 RaisePropertyChanged(()=>CropWidth);
                 RaisePropertyChanged(() => CropRect);
             }
@@ -91,10 +97,10 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropY
         {
-            get { return _cropY; }
+            get { return Session.Variables.GetInt("CropY"); }
             set
             {
-                _cropY = value;
+                Session.Variables["CropY"] = value;
                 RaisePropertyChanged(() => CropY);
                 RaisePropertyChanged(() => CropRect);
             }
@@ -102,18 +108,40 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropHeight
         {
-            get { return _cropHeight; }
+            get { return Session.Variables.GetInt("CropHeight"); }
             set
             {
-                _cropHeight = value;
+                Session.Variables["CropHeight"] = value;
                 RaisePropertyChanged(() => CropHeight);
                 RaisePropertyChanged(() => CropRect);
             }
         }
 
+        public bool CropVisible
+        {
+            get { return Session.Variables.GetBool("CropVisible"); }
+            set
+            {
+                Session.Variables["CropVisible"] = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool PanelVisible
+        {
+            get { return _panelVisible; }
+            set
+            {
+                _panelVisible = value;
+                RaisePropertyChanged(() => PanelVisible);
+            }
+        }
+
         public Rect CropRect => new Rect(CropX, CropY, CropWidth, CropHeight);
         public ICameraDevice CameraDevice => ServiceProvider.Instance.DeviceManager.SelectedCameraDevice;
+
         public Session Session => ServiceProvider.Instance.Session;
+
         public RelayCommand<IPanelItem> ItemCommand { get; set; }
 
 
@@ -122,18 +150,31 @@ namespace digiCamControl.LightBox.ViewModels
             _Livetimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
             _Livetimer.Tick += _Livetimer_Tick;
             StartLiveView();
-            CropX = 400;
-            CropY = 400;
-            CropWidth = 200;
-            CropHeight= 200;
             PanelItems = new List<IPanelItem>();
             PanelItems.Add(new LiveViewPanel());
             PanelItems.Add(new CapturePanel());
             PanelItems.Add(new CropPanel());
             PanelItems.Add(new CameraPanel());
-            ItemCommand =new RelayCommand<IPanelItem>(ExecuteItem);
+            ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             if (!IsInDesignMode)
+            {
+                if (CropX == 0)
+                    CropX = 400;
+                if (CropY == 0)
+                    CropY = 400;
+                if (CropWidth == 0)
+                    CropWidth = 200;
+                if (CropHeight == 0)
+                    CropHeight = 200;
                 ServiceProvider.Instance.Message += Instance_Message;
+                Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            }
+        }
+
+        private void Variables_ValueChangedEvent(object sender, ValueItem item)
+        {
+            RaisePropertyChanged(item.Name);
+            RaisePropertyChanged(() => CropRect);
         }
 
         private void LoadImage()
@@ -190,10 +231,12 @@ namespace digiCamControl.LightBox.ViewModels
                 if (obj.Panel != null)
                 {
                     PanelControl = obj.Panel;
+                    PanelVisible = true;
                 }
                 else
                 {
                     PanelControl = null;
+                    PanelVisible = false;
                     obj.Execute();
                 }
             }

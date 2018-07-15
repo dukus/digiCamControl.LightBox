@@ -14,7 +14,6 @@ namespace digiCamControl.LightBox.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private ContentControl _contentControl;
-        private ICameraDevice _cameraDevice;
         private bool _transferInProgress;
         private string _title;
         private ViewEnum _currentLayout;

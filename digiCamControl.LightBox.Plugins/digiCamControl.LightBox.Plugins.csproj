@@ -100,7 +100,8 @@
     </Reference>
     <Reference Include="PortableDeviceLib, Version=2.0.73.5, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\packages\CameraControl.Devices.2.0.73-beta\lib\net46\PortableDeviceLib.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

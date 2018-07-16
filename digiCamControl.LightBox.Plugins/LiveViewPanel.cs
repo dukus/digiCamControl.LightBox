@@ -15,6 +15,8 @@ namespace digiCamControl.LightBox.Plugins
         public string Id => "{4711ADD7-310F-454D-A647-1E48F24E067B}";
         public string Icon => "ViewCarousel";
         public ContentControl Panel { get; }
+
+
         public bool Execute()
         {
             ServiceProvider.Instance.OnMessage(Messages.StartLiveView);

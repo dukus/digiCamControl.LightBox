@@ -13,6 +13,7 @@ using Canon.Eos.Framework;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Plugins;
+using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -24,16 +25,23 @@ namespace digiCamControl.LightBox.ViewModels
         private object _locker = new object();
         private DispatcherTimer _Livetimer = new DispatcherTimer(DispatcherPriority.Render);
         private BitmapSource _bitmapSource;
-        private int _cropX;
-        private int _cropWidth;
-        private int _cropY;
-        private int _cropHeight;
         private ContentControl _panelControl;
         private FileItem _selectedItem;
         private bool _panelVisible;
 
 
         public List<IPanelItem> PanelItems { get; set; }
+
+        public bool CaptureWithNoAf
+        {
+            get { return Session.Variables.GetBool("CaptureWithNoAf"); }
+            set
+            {
+                Session.Variables["CaptureWithNoAf"] = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         public ContentControl PanelControl
         {
@@ -144,6 +152,9 @@ namespace digiCamControl.LightBox.ViewModels
 
         public RelayCommand<IPanelItem> ItemCommand { get; set; }
 
+        public RelayCommand BackCommand { get; set; }
+        public RelayCommand NextCommand { get; set; }
+
 
         public CaptureViewModel()
         {
@@ -156,6 +167,8 @@ namespace digiCamControl.LightBox.ViewModels
             PanelItems.Add(new CropPanel());
             PanelItems.Add(new CameraPanel());
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
+            BackCommand = new RelayCommand(Back);
+            NextCommand=new RelayCommand(Next);
             if (!IsInDesignMode)
             {
                 if (CropX == 0)
@@ -168,6 +181,41 @@ namespace digiCamControl.LightBox.ViewModels
                     CropHeight = 200;
                 ServiceProvider.Instance.Message += Instance_Message;
                 Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            }
+        }
+
+        private void Next()
+        {
+            ServiceProvider.Instance.OnMessage(Messages.ChangeLayout,null, ViewEnum.Adjust);
+        }
+
+        private void Back()
+        {
+            if ( 
+                MessageBox.Show( "You are sure do you want to continue ?\nAll captured images will be lost!!!", "Warning",
+                    MessageBoxButton.YesNo,MessageBoxImage.Warning,MessageBoxResult.No,MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
+            {
+                CleanUp();
+                ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Start);
+            }
+        }
+
+        private void CleanUp()
+        {
+            try
+            {
+                foreach (FileItem item in Session.Files)
+                {
+                    if (File.Exists(item.TempFile))
+                    {
+                        Utils.DeleteFile(item.TempFile);
+                    }
+                }
+                Session.Files.Clear();
+            }
+            catch (Exception e)
+            {
+                Log.Debug("Cleanup error", e);
             }
         }
 
@@ -287,7 +335,8 @@ namespace digiCamControl.LightBox.ViewModels
                         try
                         {
                             CameraDevice.StartLiveView();
-                            CameraDevice.AutoFocus();
+                            if (!CaptureWithNoAf)
+                                CameraDevice.AutoFocus();
                         }
                         catch (DeviceException deviceException)
                         {
@@ -361,7 +410,7 @@ namespace digiCamControl.LightBox.ViewModels
                             if (deviceException.ErrorCode == ErrorCodes.ERROR_BUSY ||
                                 deviceException.ErrorCode == ErrorCodes.MTP_Device_Busy)
                             {
-                                Thread.Sleep(500);
+                                Thread.Sleep(250);
                                 Log.Debug("Retry live view stop:" + deviceException.ErrorCode.ToString("X"));
                                 retry = true;
                                 retryNum++;
@@ -371,7 +420,7 @@ namespace digiCamControl.LightBox.ViewModels
                                 throw;
                             }
                         }
-                    } while (retry && retryNum < 35);
+                    } while (retry && retryNum < 5);
                 }
                 catch (Exception exception)
                 {

@@ -32,8 +32,11 @@ namespace digiCamControl.LightBox.Core.Clasess
                     item = new ValueItem() {Name = index};
                     Items.Add(item);
                 }
-                item.Value = TransformToString(value);
-                OnValueChangedEvent(item);
+                if (item.Value != TransformToString(value))
+                {
+                    item.Value = TransformToString(value);
+                    OnValueChangedEvent(item);
+                }
             }
         }
 

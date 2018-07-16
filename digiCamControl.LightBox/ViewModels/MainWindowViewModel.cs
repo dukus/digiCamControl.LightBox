@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +18,7 @@ namespace digiCamControl.LightBox.ViewModels
         private bool _transferInProgress;
         private string _title;
         private ViewEnum _currentLayout;
+        private Dictionary<ViewEnum, ContentControl> _contentControls = new Dictionary<ViewEnum, ContentControl>();
 
         public ContentControl ContentControl
         {
@@ -73,12 +75,14 @@ namespace digiCamControl.LightBox.ViewModels
                     ServiceProvider.Instance.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
                     ServiceProvider.Instance.DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
                     ServiceProvider.Instance.Message += Instance_Message;
+                    _contentControls.Add(ViewEnum.Start, new StartView());
+                    _contentControls.Add(ViewEnum.Capture, new CaptureView());
                     ChangeLayout(ViewEnum.Start);
                 }
             }
             catch (Exception e)
             {
-                Log.Debug("Unable to initialize the application ",e);
+                Log.Debug("Unable to initialize the application ", e);
             }
         }
 
@@ -125,6 +129,10 @@ namespace digiCamControl.LightBox.ViewModels
                 case Messages.ClearBusy:
                     //IsBusy = false;
                     break;
+                case Messages.Message:
+                    MessageBox.Show(message.ParamString);
+                    //IsBusy = false;
+                    break;
                 case Messages.ChangeLayout:
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -144,16 +152,14 @@ namespace digiCamControl.LightBox.ViewModels
 
                 case ViewEnum.Start:
                 {
-                    var view = new StartView();
-                    ContentControl = view;
+                    ContentControl = _contentControls[ViewEnum.Start];
                     Title = "Start";
                 }
                     break;
                 case ViewEnum.Capture:
                 {
-                    var view = new CaptureView();
-                    ContentControl = view;
-                    Title = "Capture";
+                        ContentControl = _contentControls[ViewEnum.Capture];
+                        Title = "Capture";
                     break;
                 }
                 default:

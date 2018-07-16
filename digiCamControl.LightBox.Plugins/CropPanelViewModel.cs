@@ -84,8 +84,7 @@ namespace digiCamControl.LightBox.Plugins
                     var iw = CropWidth * dw;
                     var ih = CropHeight * dh;
                     iw = ih / (AspectListHeigh[CropAspect] / AspectListWidth[CropAspect]);
-                    if (CropWidth != (int) (iw / dw))
-                        CropWidth = (int) (iw / dw);
+                    CropWidth = (int) (iw / dw);
                 }
                 if (item.Name == "CropWidth")
                 {
@@ -94,8 +93,7 @@ namespace digiCamControl.LightBox.Plugins
                     var iw = CropWidth * dw;
                     var ih = CropHeight * dh;
                     ih = iw * (AspectListHeigh[CropAspect] / AspectListWidth[CropAspect]);
-                    if (CropHeight != (int) (ih / dh))
-                        CropHeight = (int) (ih / dh);
+                    CropHeight = (int) (ih / dh);
                 }
             }
         }

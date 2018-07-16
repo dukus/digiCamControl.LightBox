@@ -6,21 +6,38 @@
              xmlns:local="clr-namespace:digiCamControl.LightBox.Plugins"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="300" Width="200">
+             d:DesignHeight="300" Width="250">
     <UserControl.DataContext>
         <local:CapturePanelViewModel/>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- you only need bring this resource in if you want to specify the circular style statically -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ProgressBar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <StackPanel>
-            <Button VerticalAlignment="Top" Margin="4" Content="Capture" Command="{Binding CaptureCommand}"/>
-            <CheckBox Content="Capture with no AF" IsChecked="{Binding CaptureWithNoAf}"/>
-            <TextBox Margin="4" Text="{Binding CaptureCount}"
-                      materialDesign:HintAssist.Hint="Image count"
+            <Button VerticalAlignment="Top" Margin="4" Content="Capture" Command="{Binding CaptureCommand}" IsEnabled="{Binding IsFreeToCapture}"/>
+            <TextBox Margin="4" Text="{Binding CaptureCount}" HorizontalContentAlignment="Right"
+                      materialDesign:HintAssist.Hint="Image count" IsEnabled="{Binding IsFreeToCapture}"
                       Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-            <TextBox Margin="4" Text="{Binding CaptureWait}"
-                     materialDesign:HintAssist.Hint="Wait between capture (sec)"
+            <TextBox Margin="4" Text="{Binding CaptureWait}" HorizontalContentAlignment="Right"
+                     materialDesign:HintAssist.Hint="Wait between capture (sec)" IsEnabled="{Binding IsFreeToCapture}"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-            <CheckBox Content="Transfer files after capture series" IsChecked="{Binding CaptureTransferAfterCapture}"/>
+            <CheckBox Content="Capture with no AF" IsChecked="{Binding CaptureWithNoAf}" Margin="4" IsEnabled="{Binding IsFreeToCapture}"/>
+            <CheckBox Content="Delay file transfer" IsChecked="{Binding CaptureTransferAfterCapture}" Margin="4" IsEnabled="{Binding IsFreeToCapture}"/>
+            <CheckBox Content="Leave image on camera" IsChecked="{Binding LeaveFileAfterTransfer}" Margin="4" IsEnabled="{Binding IsFreeToCapture}"/>
+            <Grid Visibility="{Binding CaptureInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="70" Height="70" Minimum="0" Maximum="{Binding CaptureCount}" Value="{Binding CaptureProgress}"/>
+                <Label Content="{Binding CaptureProgress}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="60" Height="60" Minimum="0" Maximum="{Binding CaptureWait}" Value="{Binding WaitProgress}"/>
+            </Grid>
+            <ProgressBar Value="{Binding FilesProgress}" Maximum="{Binding TotalFiles}" Margin="4" Height="16" Visibility="{Binding TransferInProgress, Converter={StaticResource BooleanToVisibilityConverter }}"/>
+            <ProgressBar Value="{Binding CameraDevice.TransferProgress}" Margin="4" Height="16" Visibility="{Binding TransferInProgress, Converter={StaticResource BooleanToVisibilityConverter }}" IsIndeterminate="True"/>
+
         </StackPanel>
     </Grid>
 </UserControl>

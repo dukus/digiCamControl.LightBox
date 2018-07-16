@@ -2,6 +2,8 @@
 using System.IO;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using CameraControl.Devices;
+using CameraControl.Devices.Classes;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
@@ -27,6 +29,15 @@ namespace digiCamControl.LightBox.Core.Clasess
                 Thread.Sleep(100);
                 retry--;
             }
+        }
+
+        /// <summary>
+        /// Try to safe delete the specifie file
+        /// </summary>
+        public static void DeleteFile(string file)
+        {
+            WaitForFile(file);
+            File.Delete(file);
         }
 
         public static bool IsFileLocked(string file)
@@ -61,6 +72,34 @@ namespace digiCamControl.LightBox.Core.Clasess
             bi.EndInit();
             bi.Freeze();
             return bi;
+        }
+
+        public static void ExecuteWithRetry(Action action, int maxRetry = 15)
+        {
+            bool retry = false;
+            int retryNum = 0;
+            do
+            {
+                try
+                {
+                    action.Invoke();
+                    Thread.Sleep(200);
+                }
+                catch (DeviceException deviceException)
+                {
+                    if (deviceException.ErrorCode == ErrorCodes.ERROR_BUSY ||
+                        deviceException.ErrorCode == ErrorCodes.MTP_Device_Busy)
+                    {
+                        Thread.Sleep(250);
+                        retry = true;
+                        retryNum++;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            } while (retry && retryNum < maxRetry);
         }
     }
 }

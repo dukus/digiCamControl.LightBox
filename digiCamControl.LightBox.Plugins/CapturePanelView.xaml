@@ -31,7 +31,7 @@
             <CheckBox Content="Delay file transfer" IsChecked="{Binding CaptureTransferAfterCapture}" Margin="4" IsEnabled="{Binding IsFreeToCapture}"/>
             <CheckBox Content="Leave image on camera" IsChecked="{Binding LeaveFileAfterTransfer}" Margin="4" IsEnabled="{Binding IsFreeToCapture}"/>
             <Grid Visibility="{Binding CaptureInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="70" Height="70" Minimum="0" Maximum="{Binding CaptureCount}" Value="{Binding CaptureProgress}"/>
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="70" Height="70" Minimum="0" Maximum="{Binding CaptureCount}" Value="{Binding CaptureProgress}" IsIndeterminate="False"/>
                 <Label Content="{Binding CaptureProgress}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="60" Height="60" Minimum="0" Maximum="{Binding CaptureWait}" Value="{Binding WaitProgress}"/>
             </Grid>

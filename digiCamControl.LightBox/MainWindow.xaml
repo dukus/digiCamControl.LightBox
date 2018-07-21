@@ -81,8 +81,13 @@
                         <Separator/>
                         <ProgressBar Width="40" Margin="5" Height="10" Minimum="0" Maximum="100" Value="{Binding CameraDevice.Battery}" Visibility="{Binding IsCameraConnected, Converter={StaticResource BooleanToVisibilityConverter}}" ToolTip="{Binding CameraDevice.Battery}"  Foreground="#35CA75" BorderBrush="Black" BorderThickness="0" Padding="1"/> 
                     </StatusBar>-->
+
+                    <materialDesign:Snackbar MessageQueue="{Binding MessageQueue}" Grid.Row="1" Margin="80,16,16,16" HorizontalAlignment="Left" >
+                        
+                    </materialDesign:Snackbar>
                 </Grid>
             </materialDesign:DrawerHost>
         </materialDesign:DialogHost>
     </Grid>
 </Window>
+

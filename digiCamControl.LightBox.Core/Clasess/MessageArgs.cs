@@ -7,5 +7,6 @@
         public object Param { get; set; }
         public object Param2 { get; set; }
         public object Param3 { get; set; }
+        public FileItem FileItem { get; set; }
     }
 }

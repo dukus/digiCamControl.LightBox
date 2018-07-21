@@ -37,25 +37,25 @@ namespace digiCamControl.LightBox.Plugins
 
         public CameraPanelViewModel()
         {
-            //FocusFCommand = new RelayCommand(() => Focus(FocusDirection.Far, FocusAmount.Small));
-            //FocusFFCommand = new RelayCommand(() => Focus(FocusDirection.Far, FocusAmount.Medium));
-            //FocusFFFCommand = new RelayCommand(() => Focus(FocusDirection.Far, FocusAmount.Large));
-            //FocusNCommand = new RelayCommand(() => Focus(FocusDirection.Near, FocusAmount.Small));
-            //FocusNNCommand = new RelayCommand(() => Focus(FocusDirection.Near, FocusAmount.Medium));
-            //FocusNNNCommand = new RelayCommand(() => Focus(FocusDirection.Near, FocusAmount.Large));
+            FocusFCommand = new RelayCommand(() => Focus(FocusDirection.Far, FocusAmount.Small));
+            FocusFFCommand = new RelayCommand(() => Focus(FocusDirection.Far, FocusAmount.Medium));
+            FocusFFFCommand = new RelayCommand(() => Focus(FocusDirection.Far, FocusAmount.Large));
+            FocusNCommand = new RelayCommand(() => Focus(FocusDirection.Near, FocusAmount.Small));
+            FocusNNCommand = new RelayCommand(() => Focus(FocusDirection.Near, FocusAmount.Medium));
+            FocusNNNCommand = new RelayCommand(() => Focus(FocusDirection.Near, FocusAmount.Large));
         }
 
-        //public void Focus(FocusDirection direction, FocusAmount amount)
-        //{
-        //    try
-        //    {
-        //        SelectedCameraDevice.Focus(direction, amount);
-        //        CaptureWithNoAf = true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Log.Error("Focus error", e);
-        //    }
-        //}
+        public void Focus(FocusDirection direction, FocusAmount amount)
+        {
+            try
+            {
+                SelectedCameraDevice.Focus(direction, amount);
+                CaptureWithNoAf = true;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Focus error", e);
+            }
+        }
     }
 }

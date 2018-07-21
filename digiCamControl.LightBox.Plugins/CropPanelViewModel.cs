@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Core.Interfaces;
 using GalaSoft.MvvmLight;
 
 namespace digiCamControl.LightBox.Plugins
 {
-    public class CropPanelViewModel : ViewModelBase
+    public class CropPanelViewModel : ViewModelBase,IInit
     {
         public Session Session => ServiceProvider.Instance.Session;
         public List<string> AspectList => new List<string>() {"Free", "Custom", "1 : 1", "4 : 3", "3 : 2", "16 : 9"};
@@ -59,7 +60,7 @@ namespace digiCamControl.LightBox.Plugins
         {
             if (!IsInDesignMode)
             {
-                Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+
             }
         }
 
@@ -99,5 +100,14 @@ namespace digiCamControl.LightBox.Plugins
         }
 
 
+        public void Init()
+        {
+            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+        }
+
+        public void UnInit()
+        {
+            Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+        }
     }
 }

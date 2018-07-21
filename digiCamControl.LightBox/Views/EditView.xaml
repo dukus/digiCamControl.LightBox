@@ -1,16 +1,17 @@
-﻿<UserControl x:Name="CaptureViewControl" x:Class="digiCamControl.LightBox.Views.CaptureView"
+﻿<UserControl x:Class="digiCamControl.LightBox.Views.EditView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:digiCamControl.LightBox.Views"
              xmlns:viewModels="clr-namespace:digiCamControl.LightBox.ViewModels"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="clr-namespace:digiCamControl.LightBox.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:dd="urn:gong-wpf-dragdrop"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.DataContext>
-        <viewModels:CaptureViewModel/>
+        <viewModels:EditViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
@@ -93,7 +94,7 @@
             <ContentControl  Content="{Binding PanelControl}" Margin="4"/>
         </materialDesign:Card>
 
-        <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Name="_image" Margin="16"/>
+        <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Name="_image"/>
         <Viewbox Grid.Row="0" Grid.Column="2" Stretch="Fill" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=_image}" Height="{Binding ActualHeight, ElementName=_image}" Visibility="{Binding CropVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Canvas Width="1000" Height="1000">
                 <Path Fill="#80000000">
@@ -109,17 +110,17 @@
                     </Path.Data>
                 </Path>
                 <ContentControl  Width="{Binding CropWidth, Mode=TwoWay}"
-                                Height="{Binding CropHeight, Mode=TwoWay}"
-                                Canvas.Top="{Binding CropY, Mode=TwoWay}"
-                                Canvas.Left="{Binding CropX, Mode=TwoWay}"
-                                Template="{StaticResource DesignerItemTemplate}">
+                                 Height="{Binding CropHeight, Mode=TwoWay}"
+                                 Canvas.Top="{Binding CropY, Mode=TwoWay}"
+                                 Canvas.Left="{Binding CropX, Mode=TwoWay}"
+                                 Template="{StaticResource DesignerItemTemplate}">
                     <!--<Rectangle Opacity="0.4" Fill="Black" IsHitTestVisible="False"/>-->
                 </ContentControl>
             </Canvas>
         </Viewbox>
-        <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Session.Files}" SelectedItem="{Binding SelectedItem}" 
+        <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Session.Files}" SelectedItem="{Binding SelectedItem}"
                  dd:DragDrop.IsDragSource="True"
-                 dd:DragDrop.IsDropTarget="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                 dd:DragDrop.IsDropTarget="True">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>

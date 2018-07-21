@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Core.Interfaces;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
 namespace digiCamControl.LightBox.Plugins
 {
-    public class CapturePanelViewModel : ViewModelBase
+    public class CapturePanelViewModel : ViewModelBase,IInit
     {
         public RelayCommand CaptureCommand { get; set; }
         public Session Session => ServiceProvider.Instance.Session;
@@ -106,8 +107,7 @@ namespace digiCamControl.LightBox.Plugins
             CaptureCommand = new RelayCommand(Capture);
             if (!IsInDesignMode)
             {
-                
-                ServiceProvider.Instance.DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
+               
                 if (CaptureCount < 1)
                     CaptureCount = 1;
                 if (Math.Abs(CaptureWait) < 0.01)
@@ -201,10 +201,12 @@ namespace digiCamControl.LightBox.Plugins
             {
                 ServiceProvider.Instance.OnMessage(Messages.Message, deviceException.Message);
                 Log.Error("Capture error", deviceException);
+                ServiceProvider.Instance.OnMessage(Messages.StatusMessage, "Capture error "+ deviceException.Message);
             }
             catch (Exception e)
             {
                 Log.Error("Capture error", e);
+                ServiceProvider.Instance.OnMessage(Messages.StatusMessage, "Capture error " + e.Message);
             }
             CaptureProgress = 0;
             CaptureInProgress = false;
@@ -241,11 +243,21 @@ namespace digiCamControl.LightBox.Plugins
                 }
                 catch (Exception e)
                 {
-                    Log.Debug("File transffer error", e);
+                    Log.Debug("File transfer error", e);
+                    ServiceProvider.Instance.OnMessage(Messages.StatusMessage, "File transfer error " + e.Message);
                 }
             }
             TransferInProgress = false;
         }
 
+        public void Init()
+        {
+            ServiceProvider.Instance.DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
+        }
+
+        public void UnInit()
+        {
+            ServiceProvider.Instance.DeviceManager.PhotoCaptured -= DeviceManager_PhotoCaptured;
+        }
     }
 }

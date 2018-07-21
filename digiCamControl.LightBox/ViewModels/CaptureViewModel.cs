@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,10 +17,11 @@ using digiCamControl.LightBox.Plugins;
 using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using ImageMagick;
 
 namespace digiCamControl.LightBox.ViewModels
 {
-    public class CaptureViewModel : ViewModelBase
+    public class CaptureViewModel : ViewModelBase, IInit
     {
         private LiveViewData _liveViewData;
         private object _locker = new object();
@@ -28,7 +30,7 @@ namespace digiCamControl.LightBox.ViewModels
         private ContentControl _panelControl;
         private FileItem _selectedItem;
         private bool _panelVisible;
-
+        private bool _liveViewRunning = false;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -61,7 +63,7 @@ namespace digiCamControl.LightBox.ViewModels
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
                 if(SelectedItem!=null)
-                    LoadImage();
+                    LoadImage(SelectedItem);
             }
         }
 
@@ -160,7 +162,7 @@ namespace digiCamControl.LightBox.ViewModels
         {
             _Livetimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
             _Livetimer.Tick += _Livetimer_Tick;
-            StartLiveView();
+
             PanelItems = new List<IPanelItem>();
             PanelItems.Add(new LiveViewPanel());
             PanelItems.Add(new CapturePanel());
@@ -179,9 +181,8 @@ namespace digiCamControl.LightBox.ViewModels
                     CropWidth = 200;
                 if (CropHeight == 0)
                     CropHeight = 200;
-                ServiceProvider.Instance.Message += Instance_Message;
-                Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
             }
+            ExecuteItem(PanelItems[1]);
         }
 
         private void Next()
@@ -206,10 +207,7 @@ namespace digiCamControl.LightBox.ViewModels
             {
                 foreach (FileItem item in Session.Files)
                 {
-                    if (File.Exists(item.TempFile))
-                    {
-                        Utils.DeleteFile(item.TempFile);
-                    }
+                    item.CleanUp();
                 }
                 Session.Files.Clear();
             }
@@ -225,14 +223,35 @@ namespace digiCamControl.LightBox.ViewModels
             RaisePropertyChanged(() => CropRect);
         }
 
-        private void LoadImage()
+        private void LoadImage(FileItem item)
         {
             try
             {
-                if (File.Exists(SelectedItem.TempFile))
+                if (File.Exists(item.TempFile))
                 {
                     ServiceProvider.Instance.OnMessage(Messages.StopLiveView);
-                    BitmapSource = Utils.LoadImage(SelectedItem.TempFile, 1092);
+                    if (!File.Exists(item.PreviewFile))
+                    {
+                        using (MagickImage image = new MagickImage(item.TempFile))
+                        {
+                            string fileName = Path.Combine(Settings.Instance.TempFolder,
+                                Path.GetRandomFileName() + ".jpg");
+                            MagickGeometry geometry=new MagickGeometry(1090,0);
+                            geometry.IgnoreAspectRatio = false;
+                            image.Sample(geometry);
+                            image.Write(fileName);
+                            item.PreviewFile = fileName;
+                            geometry.Width = 200;
+                            image.Sample(geometry);
+                            item.Thumb = image.ToBitmapSource();
+                            item.Thumb.Freeze();
+                        }
+                    }
+                    Stopwatch time=new Stopwatch();
+                    time.Start();
+                    BitmapSource = Utils.LoadImage(item.PreviewFile);
+                    time.Stop();
+                    Console.WriteLine(time.Elapsed);
                 }
             }
             catch (Exception e)
@@ -276,8 +295,15 @@ namespace digiCamControl.LightBox.ViewModels
         {
             try
             {
+
                 if (obj.Panel != null)
                 {
+                    if (PanelControl == obj.Panel)
+                    {
+                        PanelControl = null;
+                        PanelVisible = false;
+                        return;
+                    }
                     PanelControl = obj.Panel;
                     PanelVisible = true;
                 }
@@ -371,7 +397,6 @@ namespace digiCamControl.LightBox.ViewModels
                     } while (retry && retryNum < 35);
 
                     _Livetimer.Start();
-
                     Log.Debug("LiveView: Liveview start done");
                 }
                 catch (Exception exception)
@@ -384,11 +409,15 @@ namespace digiCamControl.LightBox.ViewModels
 
         public virtual void StopLiveView()
         {
+            if(!_Livetimer.IsEnabled)
+                return;
             Task.Factory.StartNew(StopLiveViewThread);
         }
 
         private void StopLiveViewThread()
         {
+            if (!_Livetimer.IsEnabled)
+                return;
             lock (_locker)
             {
                 try
@@ -499,6 +528,29 @@ namespace digiCamControl.LightBox.ViewModels
             //var bm = writeableBitmap.Crop(x1, y1, x2 - x1, y2 - y1);
             //writeableBitmap.FillRectangle(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, WriteableBitmapExtensions.ConvertColor(overlayColor), true);
             //writeableBitmap.Blit(new Rect(x1, y1, x2 - x1, y2 - y1), bm, new Rect(0, 0, bm.PixelWidth, bm.PixelHeight));
+        }
+
+        public void Init()
+        {
+            foreach (var item in PanelItems)
+            {
+                (item.Panel?.DataContext as IInit)?.Init();
+            }
+            ServiceProvider.Instance.Message += Instance_Message;
+            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            StartLiveView();
+        }
+
+        public void UnInit()
+        {
+            ServiceProvider.Instance.Message -= Instance_Message;
+            Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            StopLiveView();
+            foreach (var item in PanelItems)
+            {
+                (item.Panel?.DataContext as IInit)?.UnInit();
+            }
+
         }
     }
 }

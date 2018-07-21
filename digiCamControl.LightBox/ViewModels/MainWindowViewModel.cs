@@ -6,8 +6,10 @@ using System.Windows.Controls;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
+using MaterialDesignThemes.Wpf;
 
 
 namespace digiCamControl.LightBox.ViewModels
@@ -50,6 +52,10 @@ namespace digiCamControl.LightBox.ViewModels
             }
         }
 
+        public SnackbarMessageQueue MessageQueue { get; set; }
+
+
+
         /// <summary>
         /// Gets or sets the current selected Camera .
         /// </summary>
@@ -64,7 +70,7 @@ namespace digiCamControl.LightBox.ViewModels
         {
             try
             {
-
+                MessageQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(2000));
                 if (!IsInDesignMode)
                 {
                     ServiceProvider.Instance.DeviceManager.LoadWiaDevices = false;
@@ -77,6 +83,7 @@ namespace digiCamControl.LightBox.ViewModels
                     ServiceProvider.Instance.Message += Instance_Message;
                     _contentControls.Add(ViewEnum.Start, new StartView());
                     _contentControls.Add(ViewEnum.Capture, new CaptureView());
+                    _contentControls.Add(ViewEnum.Adjust, new EditView());
                     ChangeLayout(ViewEnum.Start);
                 }
             }
@@ -133,6 +140,11 @@ namespace digiCamControl.LightBox.ViewModels
                     MessageBox.Show(message.ParamString);
                     //IsBusy = false;
                     break;
+                case Messages.StatusMessage:
+                    MessageQueue.Enqueue(message.ParamString);
+                    //IsBusy = false;
+                    break;
+
                 case Messages.ChangeLayout:
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -144,7 +156,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void ChangeLayout(ViewEnum layoutEnum)
         {
-            DisposeLayout();
+            UnInitLayout();
             _currentLayout = layoutEnum;
 
             switch (layoutEnum)
@@ -162,17 +174,33 @@ namespace digiCamControl.LightBox.ViewModels
                         Title = "Capture";
                     break;
                 }
+                case ViewEnum.Adjust:
+                {
+                    ContentControl = _contentControls[ViewEnum.Adjust];
+                    Title = "Edit";
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(layoutEnum), layoutEnum, null);
             }
+            InitLayout();
         }
 
-        public void DisposeLayout()
+        public void UnInitLayout()
         {
             if (ContentControl != null)
             {
-                var model = ContentControl.DataContext as IDisposable;
-                model?.Dispose();
+                var model = ContentControl.DataContext as IInit;
+                model?.UnInit();
+            }
+        }
+
+        public void InitLayout()
+        {
+            if (ContentControl != null)
+            {
+                var model = ContentControl.DataContext as IInit;
+                model?.Init();
             }
         }
 

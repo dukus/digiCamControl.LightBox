@@ -6,8 +6,10 @@
         public const string SetBusy = "SetBusy";
         public const string ClearBusy = "ClearBusy";
         public const string Message = "Message";
+        public const string StatusMessage = "StatusMessage";
         public const string ImageCaptured = "ImageCaptured";
         public const string StopLiveView = "StopLiveView";
         public const string StartLiveView = "StartLiveView";
+        public const string CreatePreview = "CreatePreview";
     }
 }

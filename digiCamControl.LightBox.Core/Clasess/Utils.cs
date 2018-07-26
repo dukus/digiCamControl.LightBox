@@ -10,7 +10,10 @@ namespace digiCamControl.LightBox.Core.Clasess
 {
     public class Utils
     {
-
+        /// <summary>
+        /// Create folder structure if not exist for the specified file name (not folder !)
+        /// </summary>
+        /// <param name="filename"></param>
         public static void CreateFolder(string filename)
         {
             var folder = Path.GetDirectoryName(filename);

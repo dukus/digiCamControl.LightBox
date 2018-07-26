@@ -11,11 +11,13 @@ namespace digiCamControl.LightBox.Core.Clasess
 
         public string DataFolder { get; set; }
         public string TempFolder { get; set; }
+        public string SessionFolder { get; set; }
 
         public Settings()
         {
             DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 ServiceProvider.AppName);
+            SessionFolder = Path.Combine(DataFolder, "Sessions");
             TempFolder = Path.Combine(DataFolder, "Temp");
         }
     }

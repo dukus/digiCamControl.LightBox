@@ -186,12 +186,13 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void Next()
         {
+            Session.Save();
             ServiceProvider.Instance.OnMessage(Messages.ChangeLayout,null, ViewEnum.Adjust);
         }
 
         private void Back()
         {
-            if ( 
+            if ( Session.Files.Count>0 && 
                 MessageBox.Show( "You are sure do you want to continue ?\nAll captured images will be lost!!!", "Warning",
                     MessageBoxButton.YesNo,MessageBoxImage.Warning,MessageBoxResult.No,MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
             {

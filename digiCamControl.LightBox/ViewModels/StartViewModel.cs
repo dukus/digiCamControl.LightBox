@@ -24,6 +24,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void Next()
         {
+            Session.Save();
             ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Capture);
         }
 

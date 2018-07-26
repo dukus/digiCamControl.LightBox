@@ -8,6 +8,20 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.togglebutton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.textbox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.datagrid.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.datepicker.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.menu.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <UserControl.DataContext>
         <viewModels:StartViewModel/>
     </UserControl.DataContext>
@@ -29,13 +43,23 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBox Text="{Binding User}" materialDesign:HintAssist.Hint="Session name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0"/>
-
+                <StackPanel Grid.Row="0" Margin="4">
+                    <DockPanel  HorizontalAlignment="Stretch" >
+                        <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                            <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
+                        </Button>
+                        <TextBox Text="{Binding Session.Name}" materialDesign:HintAssist.Hint="Session name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                    </DockPanel>
+                    <TextBox Text="{Binding User}" materialDesign:HintAssist.Hint="Session name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0"/>
+                </StackPanel>
                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="16" Grid.Row="2" Command="{Binding NextCommand}">
                     <materialDesign:PackIcon Kind="ArrowRightBold" Height="24" Width="24" />
                 </Button>
             </Grid>
         </materialDesign:Card>
 
+        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="16" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Command="{Binding NextCommand}">
+            <materialDesign:PackIcon Kind="Settings" Height="24" Width="24" />
+        </Button>
     </Grid>
 </UserControl>

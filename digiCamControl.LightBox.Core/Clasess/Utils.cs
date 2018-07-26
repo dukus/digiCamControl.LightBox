@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using CameraControl.Devices;
@@ -36,6 +37,8 @@ namespace digiCamControl.LightBox.Core.Clasess
         /// </summary>
         public static void DeleteFile(string file)
         {
+            if (!File.Exists(file))
+                return;
             WaitForFile(file);
             File.Delete(file);
         }

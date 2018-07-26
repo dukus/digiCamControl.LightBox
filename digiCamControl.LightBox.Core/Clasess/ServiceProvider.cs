@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
+using digiCamControl.LightBox.Core.Interfaces;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -24,6 +26,8 @@ namespace digiCamControl.LightBox.Core.Clasess
 
         public Session Session { get; set; }
 
+        public List<IAdjustPlugin> AdjustPlugins { get; set; }
+
 
         public void Configure()
         {
@@ -31,6 +35,8 @@ namespace digiCamControl.LightBox.Core.Clasess
             Configure(LogFile);
             DeviceManager = new CameraDeviceManager();
             Session = new Session();
+            AdjustPlugins = new List<IAdjustPlugin>();
+
         }
 
         public static void Configure(string logFile)

@@ -143,7 +143,8 @@
     <Compile Include="Clasess\ValueItem.cs" />
     <Compile Include="Clasess\ValueItemCollection.cs" />
     <Compile Include="Class1.cs" />
-    <Compile Include="Interfaces\IMainView.cs" />
+    <Compile Include="Interfaces\IAdjustPlugin.cs" />
+    <Compile Include="Interfaces\IInit.cs" />
     <Compile Include="Interfaces\IPanelItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

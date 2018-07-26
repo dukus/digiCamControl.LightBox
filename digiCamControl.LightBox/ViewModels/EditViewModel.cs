@@ -6,10 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using CameraControl.Devices;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
+using digiCamControl.LightBox.Plugins.AdjustPanel;
 using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -22,6 +24,8 @@ namespace digiCamControl.LightBox.ViewModels
         private FileItem _selectedItem;
         private BitmapSource _bitmapSource;
         private bool _cropVisible;
+        private bool _panelVisible;
+        private ContentControl _panelControl;
 
         public List<IPanelItem> PanelItems { get; set; }
         public Rect CropRect => new Rect(CropX, CropY, CropWidth, CropHeight);
@@ -111,6 +115,28 @@ namespace digiCamControl.LightBox.ViewModels
             }
         }
 
+        public bool PanelVisible
+        {
+            get { return _panelVisible; }
+            set
+            {
+                _panelVisible = value;
+                RaisePropertyChanged(() => PanelVisible);
+            }
+        }
+
+        public ContentControl PanelControl
+        {
+            get { return _panelControl; }
+            set
+            {
+                _panelControl = value;
+                RaisePropertyChanged(() => PanelControl);
+            }
+        }
+
+
+        public RelayCommand<IPanelItem> ItemCommand { get; set; }
 
         public RelayCommand BackCommand { get; set; }
         public RelayCommand NextCommand { get; set; }
@@ -119,6 +145,38 @@ namespace digiCamControl.LightBox.ViewModels
         {
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
+            ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
+            PanelItems=new List<IPanelItem>();
+            PanelItems.Add(new ContrastPanel());
+        }
+
+        private void ExecuteItem(IPanelItem obj)
+        {
+            try
+            {
+
+                if (obj.Panel != null)
+                {
+                    if (PanelControl == obj.Panel)
+                    {
+                        PanelControl = null;
+                        PanelVisible = false;
+                        return;
+                    }
+                    PanelControl = obj.Panel;
+                    PanelVisible = true;
+                }
+                else
+                {
+                    PanelControl = null;
+                    PanelVisible = false;
+                    obj.Execute();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Eecute error", e);
+            }
         }
 
         private void Next()
@@ -138,7 +196,7 @@ namespace digiCamControl.LightBox.ViewModels
                 if (File.Exists(item.TempFile))
                 {
                     ServiceProvider.Instance.OnMessage(Messages.StopLiveView);
-                    if (!File.Exists(item.PreviewFile))
+                    if (!File.Exists(item.PreviewProsessedFile))
                     {
                         using (MagickImage image = new MagickImage(item.TempFile))
                         {
@@ -147,13 +205,21 @@ namespace digiCamControl.LightBox.ViewModels
                             MagickGeometry geometry = new MagickGeometry(1090, 0);
                             geometry.IgnoreAspectRatio = false;
                             image.Sample(geometry);
+                            foreach (var plugin in ServiceProvider.Instance.AdjustPlugins)
+                            {
+                                plugin.Execute(image);
+                            }
                             image.Write(fileName);
-                            item.PreviewFile = fileName;
+                            item.PreviewProsessedFile = fileName;
+                            geometry.Width = 200;
+                            image.Sample(geometry);
+                            item.Thumb = image.ToBitmapSource();
+                            item.Thumb.Freeze();
                         }
                     }
                     Stopwatch time = new Stopwatch();
                     time.Start();
-                    BitmapSource = Utils.LoadImage(item.PreviewFile);
+                    BitmapSource = Utils.LoadImage(item.PreviewProsessedFile);
                     time.Stop();
                     Console.WriteLine(time);
                 }
@@ -166,7 +232,11 @@ namespace digiCamControl.LightBox.ViewModels
 
         public void Init()
         {
-            
+            foreach (var item in Session.Files)
+            {
+                Utils.DeleteFile(item.PreviewProsessedFile);
+                LoadImage(item);
+            }
         }
 
         public void UnInit()

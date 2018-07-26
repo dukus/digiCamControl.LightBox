@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
+using ImageMagick;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
@@ -9,7 +10,10 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string FileName { get; set; }
         public string TempFile { get; set; }
         public string PreviewFile { get; set; }
+        public string PreviewProsessedFile { get; set; }
+        
         public bool ReloadRequired { get; set; }
+
 
         public BitmapSource Thumb
         {
@@ -32,6 +36,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         {
             Utils.DeleteFile(TempFile);
             Utils.DeleteFile(PreviewFile);
+            Utils.DeleteFile(PreviewProsessedFile);
         }
 
 

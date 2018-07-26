@@ -15,6 +15,7 @@ namespace digiCamControl.LightBox.Plugins
         public List<string> AspectList => new List<string>() {"Free", "Custom", "1 : 1", "4 : 3", "3 : 2", "16 : 9"};
         public List<double> AspectListWidth => new List<double>() {0, 0, 1, 4, 3, 16};
         public List<double> AspectListHeigh => new List<double>() {0, 0, 1, 3, 2, 9};
+        bool _operInProgress = false;
 
         public bool CropVisible
         {
@@ -68,8 +69,9 @@ namespace digiCamControl.LightBox.Plugins
         {
             if (CropAspect > 1)
             {
-                if (item.Name == "CropAspect")
+                if (item.Name == "CropAspect"  && !_operInProgress )
                 {
+                    _operInProgress = true;
                     var dw = Session.Variables.GetInt("CropImageWidth") / 1000.0;
                     var dh = Session.Variables.GetInt("CropImageHeight") / 1000.0;
                     var iw = CropWidth * dw;
@@ -77,24 +79,29 @@ namespace digiCamControl.LightBox.Plugins
                     iw = ih / (AspectListHeigh[CropAspect] / AspectListWidth[CropAspect]);
                     CropWidth = (int) (iw / dw);
                     CropHeight = (int) (ih / dh);
+                    _operInProgress = false;
                 }
-                if (item.Name == "CropHeight")
+                if (item.Name == "CropHeight" && !_operInProgress )
                 {
+                    _operInProgress = true;
                     var dw = Session.Variables.GetInt("CropImageWidth") / 1000.0;
                     var dh = Session.Variables.GetInt("CropImageHeight") / 1000.0;
                     var iw = CropWidth * dw;
                     var ih = CropHeight * dh;
                     iw = ih / (AspectListHeigh[CropAspect] / AspectListWidth[CropAspect]);
                     CropWidth = (int) (iw / dw);
+                    _operInProgress = false;
                 }
-                if (item.Name == "CropWidth")
+                if (item.Name == "CropWidth" && !_operInProgress)
                 {
+                    _operInProgress = true;
                     var dw = Session.Variables.GetInt("CropImageWidth") / 1000.0;
                     var dh = Session.Variables.GetInt("CropImageHeight") / 1000.0;
                     var iw = CropWidth * dw;
                     var ih = CropHeight * dh;
                     ih = iw * (AspectListHeigh[CropAspect] / AspectListWidth[CropAspect]);
                     CropHeight = (int) (ih / dh);
+                    _operInProgress = false;
                 }
             }
         }

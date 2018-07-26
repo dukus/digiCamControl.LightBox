@@ -30,7 +30,6 @@ namespace digiCamControl.LightBox.ViewModels
         private ContentControl _panelControl;
         private FileItem _selectedItem;
         private bool _panelVisible;
-        private bool _liveViewRunning = false;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -532,6 +531,11 @@ namespace digiCamControl.LightBox.ViewModels
 
         public void Init()
         {
+            foreach (var item in Session.Files)
+            {
+                Utils.DeleteFile(item.PreviewFile);
+            }
+
             foreach (var item in PanelItems)
             {
                 (item.Panel?.DataContext as IInit)?.Init();

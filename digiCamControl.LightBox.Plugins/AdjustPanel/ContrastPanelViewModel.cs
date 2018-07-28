@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Plugins.Adjust;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace digiCamControl.LightBox.Plugins.AdjustPanel
 {
@@ -12,25 +14,76 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
     {
         public Session Session => ServiceProvider.Instance.Session;
 
-
-        public bool Brightness
+        public int Brightness
         {
-            get { return Session.Variables.GetBool("Brightness"); }
+            get { return Session.Variables.GetInt("Brightness"); }
             set
             {
                 Session.Variables["Brightness"] = value;
                 RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
         }
 
-        public bool Contrast
+        public int Contrast
         {
-            get { return Session.Variables.GetBool("Contrast"); }
+            get { return Session.Variables.GetInt("Contrast"); }
             set
             {
                 Session.Variables["Contrast"] = value;
                 RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
+        }
+
+        public int Saturation
+        {
+            get { return Session.Variables.GetInt("Saturation"); }
+            set
+            {
+                Session.Variables["Saturation"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public int Hue
+        {
+            get { return Session.Variables.GetInt("Hue"); }
+            set
+            {
+                Session.Variables["Hue"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public bool Normalize
+        {
+            get { return Session.Variables.GetBool("Normalize"); }
+            set
+            {
+                Session.Variables["Normalize"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public RelayCommand ResetCommand { get; set; }
+
+        public ContrastPanelViewModel()
+        {
+            ResetCommand = new RelayCommand(Reset);
+        }
+
+        private void Reset()
+        {
+            Brightness = 0;
+            Saturation = 0;
+            Hue = 0;
+            Contrast = 0;
+            Normalize = false;
+            ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
         }
     }
 }

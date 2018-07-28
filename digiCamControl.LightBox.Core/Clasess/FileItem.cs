@@ -7,12 +7,23 @@ namespace digiCamControl.LightBox.Core.Clasess
     public class FileItem:ViewModelBase
     {
         private BitmapSource _thumb;
+        private bool _isBusy;
         public string FileName { get; set; }
         public string TempFile { get; set; }
         public string PreviewFile { get; set; }
         public string PreviewProsessedFile { get; set; }
         
         public bool ReloadRequired { get; set; }
+
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
         public BitmapSource Thumb

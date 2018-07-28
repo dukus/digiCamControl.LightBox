@@ -11,5 +11,6 @@
         public const string StopLiveView = "StopLiveView";
         public const string StartLiveView = "StartLiveView";
         public const string CreatePreview = "CreatePreview";
+        public const string RefreshThumb = "RefreshThumb";
     }
 }

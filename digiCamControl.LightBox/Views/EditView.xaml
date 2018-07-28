@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Combobox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ProgressBar.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type controls:MoveThumb}">
                 <Rectangle Fill="Transparent"/>
@@ -120,12 +121,13 @@
         </Viewbox>
         <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Session.Files}" SelectedItem="{Binding SelectedItem}"
                  dd:DragDrop.IsDragSource="True"
-                 dd:DragDrop.IsDropTarget="True">
+                 dd:DragDrop.IsDropTarget="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
                         <Grid Cursor="Hand">
                             <Image Source="{Binding Thumb}"  Stretch="Uniform" Margin="3" Height="120"/>
+                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Width="20" Height="20" Margin="16" Visibility="{Binding IsBusy,Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </Grid>
                     </StackPanel>
                 </DataTemplate>

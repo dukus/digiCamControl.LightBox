@@ -58,10 +58,10 @@ namespace digiCamControl.LightBox.Plugins.Adjust
             }
         }
 
-        public void Execute(MagickImage image)
+        public IMagickImage Execute(IMagickImage image)
         {
             if (!CropVisible)
-                return;
+                return image;
 
             var dw = image.Width / 1000.0;
             var dh = image.Height / 1000.0;
@@ -69,7 +69,7 @@ namespace digiCamControl.LightBox.Plugins.Adjust
             image.Crop((int)(CropX * dw), (int)(CropY * dh), (int)(CropWidth * dw),
                 (int)(CropHeight * dh));
             image.RePage();
-
+            return image;
         }
     }
 }

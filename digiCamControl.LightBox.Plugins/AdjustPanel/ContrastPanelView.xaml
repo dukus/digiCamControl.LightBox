@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:digiCamControl.LightBox.Plugins.AdjustPanel"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300" Width="250">
     <UserControl.DataContext>
@@ -11,11 +12,19 @@
     </UserControl.DataContext>
     <Grid>
         <StackPanel Margin="4">
-            <Label Content="Brightness"  Margin="4"/>
-            <Slider  Margin="4" Value="{Binding Brightness}"/>
-            <Label Content="Contrast"  Margin="4"/>
-            <Slider  Margin="4" Value="{Binding Contrast}"/>
-        </StackPanel>
+            <CheckBox IsChecked="{Binding Normalize}" Content="Normalize"/>
+            <TextBlock Text="Brightness"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding Brightness}" Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft"/>
+            <TextBlock Text="Contrast"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding Contrast}"  Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft"/>
+            <TextBlock Text="Hue"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding Hue}"  Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft"/>
+            <TextBlock Text="Saturation"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding Saturation}"  Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft"/>
 
+        </StackPanel>
+        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="16" Command="{Binding ResetCommand}" ToolTip="Reset values">
+            <materialDesign:PackIcon Kind="Restart" Height="24" Width="24" />
+        </Button>
     </Grid>
 </UserControl>

@@ -21,6 +21,9 @@ namespace digiCamControl.LightBox.ViewModels
 {
     public class EditViewModel:ViewModelBase, IInit
     {
+        private bool _loadInProgress;
+        private bool _loadRequest;
+
         private FileItem _selectedItem;
         private BitmapSource _bitmapSource;
         private bool _cropVisible;
@@ -52,11 +55,11 @@ namespace digiCamControl.LightBox.ViewModels
             set
             {
                 _bitmapSource = value;
-                if (_bitmapSource != null)
-                {
-                    Session.Variables["CropImageWidth"] = _bitmapSource.PixelWidth;
-                    Session.Variables["CropImageHeight"] = _bitmapSource.PixelHeight;
-                }
+                //if (_bitmapSource != null)
+                //{
+                //    Session.Variables["CropImageWidth"] = _bitmapSource.PixelWidth;
+                //    Session.Variables["CropImageHeight"] = _bitmapSource.PixelHeight;
+                //}
                 RaisePropertyChanged(() => BitmapSource);
             }
         }
@@ -146,8 +149,7 @@ namespace digiCamControl.LightBox.ViewModels
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
-            PanelItems=new List<IPanelItem>();
-            PanelItems.Add(new ContrastPanel());
+            PanelItems = new List<IPanelItem> {new ContrastPanel(), new RemoveBackgroundPanel()};
         }
 
         private void ExecuteItem(IPanelItem obj)
@@ -189,40 +191,46 @@ namespace digiCamControl.LightBox.ViewModels
             ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Capture);
         }
 
-        private void LoadImage(FileItem item)
+        private void LoadImage(FileItem item,bool force=false)
         {
             try
             {
+                force = item.ReloadRequired || force;
                 if (File.Exists(item.TempFile))
                 {
                     ServiceProvider.Instance.OnMessage(Messages.StopLiveView);
-                    if (!File.Exists(item.PreviewProsessedFile))
+                    if (!File.Exists(item.PreviewProsessedFile) || force)
                     {
-                        using (MagickImage image = new MagickImage(item.TempFile))
+                        item.IsBusy = true;
+                        IMagickImage image = new MagickImage(item.TempFile);
+
+                        string fileName = Path.Combine(Settings.Instance.TempFolder,
+                            Path.GetRandomFileName() + ".png");
+                        item.PreviewProsessedFile = force ? item.PreviewProsessedFile : fileName;
+                        MagickGeometry geometry = new MagickGeometry(1090, 0);
+                        geometry.IgnoreAspectRatio = false;
+                        image.Resize(geometry);
+                        foreach (var plugin in ServiceProvider.Instance.AdjustPlugins)
                         {
-                            string fileName = Path.Combine(Settings.Instance.TempFolder,
-                                Path.GetRandomFileName() + ".jpg");
-                            MagickGeometry geometry = new MagickGeometry(1090, 0);
-                            geometry.IgnoreAspectRatio = false;
-                            image.Sample(geometry);
-                            foreach (var plugin in ServiceProvider.Instance.AdjustPlugins)
-                            {
-                                plugin.Execute(image);
-                            }
-                            image.Write(fileName);
-                            item.PreviewProsessedFile = fileName;
-                            geometry.Width = 200;
-                            image.Sample(geometry);
-                            item.Thumb = image.ToBitmapSource();
-                            item.Thumb.Freeze();
+                            image = plugin.Execute(image);
                         }
+                        image.Write(item.PreviewProsessedFile);
+                        var bitmap = image.ToBitmapSource();
+                        bitmap.Freeze();
+                        BitmapSource = bitmap;
+                        geometry.Width = 200;
+                        image.Sample(geometry);
+                        item.Thumb = image.ToBitmapSource();
+                        item.Thumb.Freeze();
+                        item.ReloadRequired = false;
+
                     }
-                    Stopwatch time = new Stopwatch();
-                    time.Start();
-                    BitmapSource = Utils.LoadImage(item.PreviewProsessedFile);
-                    time.Stop();
-                    Console.WriteLine(time);
+                    else
+                    {
+                        BitmapSource = Utils.LoadImage(item.PreviewProsessedFile);
+                    }
                 }
+                item.IsBusy = false;
             }
             catch (Exception e)
             {
@@ -232,16 +240,52 @@ namespace digiCamControl.LightBox.ViewModels
 
         public void Init()
         {
-            foreach (var item in Session.Files)
+            if (Session.Files.Count > 0)
             {
-                Utils.DeleteFile(item.PreviewProsessedFile);
-                LoadImage(item);
+                foreach (var item in Session.Files)
+                {
+                    Utils.DeleteFile(item.PreviewProsessedFile);
+                    LoadImage(item);
+                }
+                SelectedItem = Session.Files[0];
+            }
+            ServiceProvider.Instance.Message += Instance_Message;
+        }
+
+        private void Instance_Message(object sender, MessageArgs message)
+        {
+            switch (message.Message)
+            {
+                case Messages.RefreshThumb:
+                {
+                    Task.Factory.StartNew(ReloadImages);
+                }
+                    break;
             }
         }
 
         public void UnInit()
         {
-            
+            ServiceProvider.Instance.Message -= Instance_Message;
+        }
+
+        private void ReloadImages()
+        {
+            if (_loadInProgress)
+            {
+                _loadRequest = true;
+                return;
+            }
+            foreach (var item in Session.Files)
+            {
+                item.ReloadRequired = true;
+            }
+            _loadInProgress = true;
+            LoadImage(SelectedItem, true);
+            if (_loadRequest)
+                LoadImage(SelectedItem,true);
+            _loadInProgress = false;
+            _loadRequest = false;
         }
     }
 }

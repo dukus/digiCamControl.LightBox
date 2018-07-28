@@ -141,7 +141,14 @@
       <DependentUpon>ContrastPanelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AdjustPanel\ContrastPanelViewModel.cs" />
+    <Compile Include="AdjustPanel\RemoveBackgroundPanel.cs" />
+    <Compile Include="AdjustPanel\RemoveBackgroundPanelView.xaml.cs">
+      <DependentUpon>RemoveBackgroundPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AdjustPanel\RemoveBackgroundPanelViewModel.cs" />
+    <Compile Include="Adjust\Contrast.cs" />
     <Compile Include="Adjust\Crop.cs" />
+    <Compile Include="Adjust\RemoveBackground.cs" />
     <Compile Include="Panel\CameraPanel.cs" />
     <Compile Include="Panel\CameraPanelView.xaml.cs">
       <DependentUpon>CameraPanelView.xaml</DependentUpon>
@@ -168,6 +175,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AdjustPanel\ContrastPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AdjustPanel\RemoveBackgroundPanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

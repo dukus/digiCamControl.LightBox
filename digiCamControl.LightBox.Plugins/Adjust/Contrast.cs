@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using digiCamControl.LightBox.Core.Clasess;
+﻿using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using ImageMagick;
 
@@ -13,59 +7,59 @@ namespace digiCamControl.LightBox.Plugins.Adjust
     public class Contrast: IAdjustPlugin
     {
         public Session Session => ServiceProvider.Instance.Session;
-
-
+        public ValueItemCollection Variables { get; set; }
 
         public int Brightness
         {
-            get { return Session.Variables.GetInt("Brightness"); }
+            get { return Variables.GetInt("Brightness"); }
             set
             {
-                Session.Variables["Brightness"] = value;
+                Variables["Brightness"] = value;
 
             }
         }
 
         public int Saturation
         {
-            get { return Session.Variables.GetInt("Saturation"); }
+            get { return Variables.GetInt("Saturation"); }
             set
             {
-                Session.Variables["Saturation"] = value;
+                Variables["Saturation"] = value;
 
             }
         }
 
         public int Hue
         {
-            get { return Session.Variables.GetInt("Hue"); }
+            get { return Variables.GetInt("Hue"); }
             set
             {
-                Session.Variables["Hue"] = value;
+                Variables["Hue"] = value;
             }
         }
 
         public int ContrastValue
         {
-            get { return Session.Variables.GetInt("Contrast"); }
+            get { return Variables.GetInt("Contrast"); }
             set
             {
-                Session.Variables["Contrast"] = value;
+                Variables["Contrast"] = value;
             }
         }
 
         public bool Normalize
         {
-            get { return Session.Variables.GetBool("Normalize"); }
+            get { return Variables.GetBool("Normalize"); }
             set
             {
-                Session.Variables["Normalize"] = value;
+                Variables["Normalize"] = value;
             }
         }
 
 
-        public IMagickImage Execute(IMagickImage image)
+        public IMagickImage Execute(IMagickImage image, ValueItemCollection values)
         {
+            Variables = values;
             if (Normalize)
                 image.Normalize();
             image.BrightnessContrast(new Percentage(Brightness), new Percentage(ContrastValue));

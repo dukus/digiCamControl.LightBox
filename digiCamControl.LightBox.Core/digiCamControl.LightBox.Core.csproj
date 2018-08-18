@@ -92,12 +92,12 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Magick.NET-Q8-x86, Version=7.4.5.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=x86">
-      <HintPath>..\packages\Magick.NET-Q8-x86.7.4.5\lib\net40\Magick.NET-Q8-x86.dll</HintPath>
+    <Reference Include="Magick.NET-Q8-x86, Version=7.6.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=x86">
+      <HintPath>..\packages\Magick.NET-Q8-x86.7.6.0\lib\net40\Magick.NET-Q8-x86.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PortableDeviceLib, Version=2.0.76.6, Culture=neutral, processorArchitecture=x86">
@@ -109,6 +109,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Rssdp.Native, Version=2.0.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rssdp.2.0.9\lib\net45\Rssdp.Native.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SmartFormat, Version=2.3.0.0, Culture=neutral, PublicKeyToken=568866805651201f, processorArchitecture=MSIL">
+      <HintPath>..\packages\SmartFormat.NET.2.3.0\lib\net45\SmartFormat.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -133,6 +137,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clasess\ExportItem.cs" />
     <Compile Include="Clasess\FileItem.cs" />
     <Compile Include="Clasess\MessageArgs.cs" />
     <Compile Include="Clasess\Messages.cs" />
@@ -144,12 +149,14 @@
     <Compile Include="Clasess\ValueItemCollection.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Interfaces\IAdjustPlugin.cs" />
+    <Compile Include="Interfaces\IExportPlugin.cs" />
     <Compile Include="Interfaces\IInit.cs" />
     <Compile Include="Interfaces\IPanelItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -161,12 +168,12 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets" Condition="Exists('..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets')" />
+  <Import Project="..\packages\Magick.NET-Q8-x86.7.6.0\build\net40\Magick.NET-Q8-x86.targets" Condition="Exists('..\packages\Magick.NET-Q8-x86.7.6.0\build\net40\Magick.NET-Q8-x86.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x86.7.4.5\build\net40\Magick.NET-Q8-x86.targets'))" />
+    <Error Condition="!Exists('..\packages\Magick.NET-Q8-x86.7.6.0\build\net40\Magick.NET-Q8-x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x86.7.6.0\build\net40\Magick.NET-Q8-x86.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

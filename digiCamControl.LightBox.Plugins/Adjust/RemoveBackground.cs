@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Activation;
 using System.Text;
 using System.Threading.Tasks;
 using digiCamControl.LightBox.Core.Clasess;
@@ -12,46 +13,66 @@ namespace digiCamControl.LightBox.Plugins.Adjust
     public class RemoveBackground: IAdjustPlugin
     {
         public Session Session => ServiceProvider.Instance.Session;
+        public ValueItemCollection Variables { get; set; }
+
 
         public int RemoveBackgroundThreshold
         {
-            get { return Session.Variables.GetInt("RemoveBackgroundThreshold"); }
+            get { return Variables.GetInt("RemoveBackgroundThreshold"); }
             set
             {
-                Session.Variables["RemoveBackgroundThreshold"] = value;
+                Variables["RemoveBackgroundThreshold"] = value;
             }
         }
 
         public bool RemoveBackgroundActive
         {
-            get { return Session.Variables.GetBool("RemoveBackgroundActive"); }
+            get { return Variables.GetBool("RemoveBackgroundActive"); }
             set
             {
-                Session.Variables["RemoveBackgroundActive"] = value;
+                Variables["RemoveBackgroundActive"] = value;
             }
         }
 
         public double RemoveBackgroundFeather
         {
-            get { return Session.Variables.GetDouble("RemoveBackgroundFeather"); }
+            get { return Variables.GetDouble("RemoveBackgroundFeather"); }
             set
             {
-                Session.Variables["RemoveBackgroundFeather"] = value;
+                Variables["RemoveBackgroundFeather"] = value;
             }
         }
 
-        public IMagickImage Execute(IMagickImage image)
+        public IMagickImage Execute(IMagickImage image, ValueItemCollection values)
         {
+            Variables = values;
             if (RemoveBackgroundActive)
             {
 
-                image.ColorAlpha(MagickColors.White);
+                image.ColorAlpha(MagickColors.Transparent);
 
-                image.ColorFuzz = new Percentage(RemoveBackgroundThreshold);
-                image.TransparentChroma(new MagickColor("#FFFFFF"), new MagickColor("#F0F0F0"));
-                image.Transparent(MagickColor.FromRgb(255, 255, 255));
+                image.Alpha(AlphaOption.Set);
+                image.VirtualPixelMethod = VirtualPixelMethod.Transparent;
+
+                //                image.ColorFuzz = new Percentage(RemoveBackgroundThreshold);
+                //                image.TransparentChroma(new MagickColor("#FFFFFF"), new MagickColor("#F0F0F0"));
+                //                image.Transparent(MagickColor.FromRgb(255, 255, 255));
+
+
+                var clone = image.Clone();
+                clone.ColorFuzz = new Percentage(RemoveBackgroundThreshold);
+                clone.TransparentChroma(new MagickColor("#FFFFFF"), new MagickColor("#F0F0F0"));
+                clone.Transparent(MagickColor.FromRgb(255, 255, 255));
+
+
                 if (RemoveBackgroundFeather > 0)
-                    image.Blur(0, RemoveBackgroundFeather, Channels.Alpha);
+                {
+                    clone.Scale(new Percentage(10));
+                    clone.Blur(0, RemoveBackgroundFeather, Channels.Alpha);
+                    clone.Resize(image.Width, image.Width);
+
+                }
+                image.Composite(clone, CompositeOperator.CopyAlpha);
 
                 image.Alpha(AlphaOption.Background);
                 using (MagickImageCollection images = new MagickImageCollection())

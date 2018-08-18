@@ -42,10 +42,15 @@ namespace digiCamControl.LightBox.ViewModels
             get { return _selectedItem; }
             set
             {
+                _selectedItem?.Variables.CopyFrom(Session.Variables);
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
+
                 if (SelectedItem != null)
+                {
+                    Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
+                }
             }
         }
 
@@ -183,7 +188,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void Next()
         {
-          //  ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Adjust);
+            ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Export);
         }
 
         private void Back()
@@ -212,7 +217,7 @@ namespace digiCamControl.LightBox.ViewModels
                         image.Resize(geometry);
                         foreach (var plugin in ServiceProvider.Instance.AdjustPlugins)
                         {
-                            image = plugin.Execute(image);
+                            image = plugin.Execute(image, item.Variables);
                         }
                         image.Write(item.PreviewProsessedFile);
                         var bitmap = image.ToBitmapSource();
@@ -249,8 +254,21 @@ namespace digiCamControl.LightBox.ViewModels
                 }
                 SelectedItem = Session.Files[0];
             }
+            foreach (var item in PanelItems)
+            {
+                (item.Panel?.DataContext as IInit)?.Init();
+            }
+
             ServiceProvider.Instance.Message += Instance_Message;
+            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
         }
+
+        private void Variables_ValueChangedEvent(object sender, ValueItem item)
+        {
+            RaisePropertyChanged(item.Name);
+            RaisePropertyChanged(() => CropRect);
+        }
+
 
         private void Instance_Message(object sender, MessageArgs message)
         {
@@ -267,6 +285,11 @@ namespace digiCamControl.LightBox.ViewModels
         public void UnInit()
         {
             ServiceProvider.Instance.Message -= Instance_Message;
+            Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            foreach (var item in PanelItems)
+            {
+                (item.Panel?.DataContext as IInit)?.UnInit();
+            }
         }
 
         private void ReloadImages()
@@ -281,6 +304,7 @@ namespace digiCamControl.LightBox.ViewModels
                 item.ReloadRequired = true;
             }
             _loadInProgress = true;
+            SelectedItem.Variables.CopyFrom(Session.Variables);
             LoadImage(SelectedItem, true);
             if (_loadRequest)
                 LoadImage(SelectedItem,true);

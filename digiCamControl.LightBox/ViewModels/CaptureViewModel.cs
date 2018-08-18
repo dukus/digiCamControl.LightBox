@@ -59,10 +59,15 @@ namespace digiCamControl.LightBox.ViewModels
             get { return _selectedItem; }
             set
             {
+                _selectedItem?.Variables.CopyFrom(Session.Variables);
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
-                if(SelectedItem!=null)
+
+                if (SelectedItem != null)
+                {
+                    Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
+                }
             }
         }
 
@@ -169,7 +174,7 @@ namespace digiCamControl.LightBox.ViewModels
             PanelItems.Add(new CameraPanel());
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             BackCommand = new RelayCommand(Back);
-            NextCommand=new RelayCommand(Next);
+            NextCommand = new RelayCommand(Next);
             if (!IsInDesignMode)
             {
                 if (CropX == 0)
@@ -269,6 +274,7 @@ namespace digiCamControl.LightBox.ViewModels
                     case Messages.ImageCaptured:
                     {
                         FileItem item = new FileItem(message.ParamString);
+                        item.Variables.CopyFrom(Session.Variables);
                         Session.Files.Add(item);
                         SelectedItem = item;
                     }

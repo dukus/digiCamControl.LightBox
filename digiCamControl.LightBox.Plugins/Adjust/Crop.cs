@@ -13,53 +13,58 @@ namespace digiCamControl.LightBox.Plugins.Adjust
     {
         public Session Session => ServiceProvider.Instance.Session;
 
+        public ValueItemCollection Variables { get; set; }
+
+
         public int CropX
         {
-            get { return Session.Variables.GetInt("CropX"); }
+            get { return Variables.GetInt("CropX"); }
             set
             {
-                Session.Variables["CropX"] = value;
+                Variables["CropX"] = value;
             }
         }
 
         public int CropWidth
         {
-            get { return Session.Variables.GetInt("CropWidth"); }
+            get { return Variables.GetInt("CropWidth"); }
             set
             {
-                Session.Variables["CropWidth"] = value;
+                Variables["CropWidth"] = value;
             }
         }
 
         public int CropY
         {
-            get { return Session.Variables.GetInt("CropY"); }
+            get { return Variables.GetInt("CropY"); }
             set
             {
-                Session.Variables["CropY"] = value;
+                Variables["CropY"] = value;
             }
         }
 
         public int CropHeight
         {
-            get { return Session.Variables.GetInt("CropHeight"); }
+            get { return Variables.GetInt("CropHeight"); }
             set
             {
-                Session.Variables["CropHeight"] = value;
+                Variables["CropHeight"] = value;
             }
         }
 
         public bool CropVisible
         {
-            get { return Session.Variables.GetBool("CropVisible"); }
+            get { return Variables.GetBool("CropVisible"); }
             set
             {
-                Session.Variables["CropVisible"] = value;
+                Variables["CropVisible"] = value;
             }
         }
 
-        public IMagickImage Execute(IMagickImage image)
+        public IMagickImage Execute(IMagickImage image, ValueItemCollection values)
         {
+            Variables = values;
+
             if (!CropVisible)
                 return image;
 

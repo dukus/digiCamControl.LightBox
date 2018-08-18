@@ -84,6 +84,7 @@ namespace digiCamControl.LightBox.ViewModels
                     _contentControls.Add(ViewEnum.Start, new StartView());
                     _contentControls.Add(ViewEnum.Capture, new CaptureView());
                     _contentControls.Add(ViewEnum.Adjust, new EditView());
+                    _contentControls.Add(ViewEnum.Export, new ExportView());
                     ChangeLayout(ViewEnum.Start);
                 }
             }
@@ -178,6 +179,12 @@ namespace digiCamControl.LightBox.ViewModels
                 {
                     ContentControl = _contentControls[ViewEnum.Adjust];
                     Title = "Edit";
+                    break;
+                }
+                case ViewEnum.Export:
+                {
+                    ContentControl = _contentControls[ViewEnum.Export];
+                    Title = "Export";
                     break;
                 }
                 default:

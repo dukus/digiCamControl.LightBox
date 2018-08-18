@@ -15,6 +15,9 @@ namespace digiCamControl.LightBox.Core.Clasess
         
         public bool ReloadRequired { get; set; }
 
+        public ValueItemCollection Variables { get; set; }
+
+
         public bool IsBusy
         {
             get { return _isBusy; }
@@ -41,6 +44,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         {
             TempFile = file;
             //Thumb = Utils.LoadImage(file, 240);
+            Variables = new ValueItemCollection();
         }
 
         public void CleanUp()

@@ -10,6 +10,6 @@ namespace digiCamControl.LightBox.Core.Interfaces
 {
     public interface IAdjustPlugin
     {
-        IMagickImage Execute(IMagickImage image);
+        IMagickImage Execute(IMagickImage image, ValueItemCollection values);
     }
 }

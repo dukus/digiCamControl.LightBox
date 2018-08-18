@@ -27,7 +27,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         public Session Session { get; set; }
 
         public List<IAdjustPlugin> AdjustPlugins { get; set; }
-
+        public List<IExportPlugin> ExportPlugins { get; set; }
 
         public void Configure()
         {
@@ -36,7 +36,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             DeviceManager = new CameraDeviceManager();
             Session = new Session();
             AdjustPlugins = new List<IAdjustPlugin>();
-
+            ExportPlugins = new List<IExportPlugin>();
         }
 
         public static void Configure(string logFile)

@@ -92,5 +92,13 @@ namespace digiCamControl.LightBox.Core.Clasess
         {
             ValueChangedEvent?.Invoke(this, item);
         }
+
+        public void CopyFrom(ValueItemCollection values)
+        {
+            foreach (var item in values.Items)
+            {
+                this[item.Name] = item.Value;
+            }
+        }
     }
 }

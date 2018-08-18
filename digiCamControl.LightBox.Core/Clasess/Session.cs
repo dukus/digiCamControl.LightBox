@@ -13,12 +13,13 @@ namespace digiCamControl.LightBox.Core.Clasess
         [JsonIgnore]
         public AsyncObservableCollection<FileItem> Files { get; set; }
         public ValueItemCollection Variables { get; set; }
-
+        public AsyncObservableCollection<ExportItem> ExportItems { get; set; }
 
         public Session()
         {
             Files = new AsyncObservableCollection<FileItem>();
             Variables = new ValueItemCollection();
+            ExportItems = new AsyncObservableCollection<ExportItem>();
         }
 
         public void Save()

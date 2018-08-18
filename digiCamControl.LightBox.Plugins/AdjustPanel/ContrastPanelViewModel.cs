@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Plugins.Adjust;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
 namespace digiCamControl.LightBox.Plugins.AdjustPanel
 {
-    public class ContrastPanelViewModel:ViewModelBase
+    public class ContrastPanelViewModel:ViewModelBase, IInit
     {
         public Session Session => ServiceProvider.Instance.Session;
 
@@ -85,6 +86,22 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
             Normalize = false;
             ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
         }
+
+        public void Init()
+        {
+            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+        }
+
+        public void UnInit()
+        {
+            Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+        }
+
+        private void Variables_ValueChangedEvent(object sender, ValueItem item)
+        {
+            RaisePropertyChanged(item.Name);
+        }
+
     }
 }
 

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Plugins.Adjust;
+using digiCamControl.LightBox.Plugins.ExportPlugins;
 
 namespace digiCamControl.LightBox
 {
@@ -23,6 +19,7 @@ namespace digiCamControl.LightBox
                 ServiceProvider.Instance.AdjustPlugins.Add(new Crop());
                 ServiceProvider.Instance.AdjustPlugins.Add(new Contrast());
                 ServiceProvider.Instance.AdjustPlugins.Add(new RemoveBackground());
+                ServiceProvider.Instance.ExportPlugins.Add(new CopyPlugin());
             }
             catch (Exception exception)
             {

@@ -7,15 +7,17 @@ using Newtonsoft.Json;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
-    public class Session
+    public class Profile
     {
         public string Name { get; set; }
+        public string SessionName { get; set; }
+        public int SessionCounter { get; set; }
         [JsonIgnore]
         public AsyncObservableCollection<FileItem> Files { get; set; }
         public ValueItemCollection Variables { get; set; }
         public AsyncObservableCollection<ExportItem> ExportItems { get; set; }
 
-        public Session()
+        public Profile()
         {
             Files = new AsyncObservableCollection<FileItem>();
             Variables = new ValueItemCollection();
@@ -26,8 +28,8 @@ namespace digiCamControl.LightBox.Core.Clasess
         {
             try
             {
-                string json = JsonConvert.SerializeObject(this);
-                string file = Path.Combine(Settings.Instance.SessionFolder, Name + ".json");
+                string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+                string file = Path.Combine(Settings.Instance.ProfileFolder, Name + ".json");
                 Utils.CreateFolder(file);
                 File.WriteAllText(file,json);
             }
@@ -43,17 +45,22 @@ namespace digiCamControl.LightBox.Core.Clasess
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public Session Load(string filename)
+        public Profile Load(string filename)
         {
             try
             {
-                return JsonConvert.DeserializeObject<Session>(File.ReadAllText(filename));
+                return JsonConvert.DeserializeObject<Profile>(File.ReadAllText(filename));
             }
             catch (Exception e)
             {
                 Log.Error("Error to load sesion", e);
             }
-            return new Session();
+            return new Profile();
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

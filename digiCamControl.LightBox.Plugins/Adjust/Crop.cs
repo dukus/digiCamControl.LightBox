@@ -11,7 +11,7 @@ namespace digiCamControl.LightBox.Plugins.Adjust
 {
     public class Crop : IAdjustPlugin
     {
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
 
         public ValueItemCollection Variables { get; set; }
 

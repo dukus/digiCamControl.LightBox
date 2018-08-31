@@ -142,7 +142,7 @@
     <Compile Include="Clasess\MessageArgs.cs" />
     <Compile Include="Clasess\Messages.cs" />
     <Compile Include="Clasess\ServiceProvider.cs" />
-    <Compile Include="Clasess\Session.cs" />
+    <Compile Include="Clasess\Profile.cs" />
     <Compile Include="Clasess\Settings.cs" />
     <Compile Include="Clasess\Utils.cs" />
     <Compile Include="Clasess\ValueItem.cs" />

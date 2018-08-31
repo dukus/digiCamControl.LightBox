@@ -13,7 +13,7 @@ namespace digiCamControl.LightBox.Plugins
 {
     public class CameraPanelViewModel:ViewModelBase
     {
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
 
 
         public RelayCommand FocusFFFCommand { get; set; }

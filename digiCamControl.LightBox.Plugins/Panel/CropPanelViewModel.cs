@@ -11,7 +11,7 @@ namespace digiCamControl.LightBox.Plugins
 {
     public class CropPanelViewModel : ViewModelBase,IInit
     {
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
         public List<string> AspectList => new List<string>() {"Free", "Custom", "1 : 1", "4 : 3", "3 : 2", "16 : 9"};
         public List<double> AspectListWidth => new List<double>() {0, 0, 1, 4, 3, 16};
         public List<double> AspectListHeigh => new List<double>() {0, 0, 1, 3, 2, 9};

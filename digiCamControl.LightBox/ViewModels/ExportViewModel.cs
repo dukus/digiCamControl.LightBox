@@ -6,11 +6,11 @@ using GalaSoft.MvvmLight.Command;
 
 namespace digiCamControl.LightBox.ViewModels
 {
-    public class ExportViewModel:ViewModelBase
+    public class ExportViewModel:ViewModelBase, IInit
     {
         public List<IExportPlugin> ExportPlugins => ServiceProvider.Instance.ExportPlugins;
         public RelayCommand<IExportPlugin> AddCommand { get; set; }
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
 
         public ExportViewModel()
         {
@@ -24,6 +24,16 @@ namespace digiCamControl.LightBox.ViewModels
             item.Id = obj.Id;
             item.Icon = obj.Icon;
             Session.ExportItems.Add(item);
+        }
+
+        public void Init()
+        {
+            RaisePropertyChanged(() => Session);
+        }
+
+        public void UnInit()
+        {
+            
         }
     }
 }

@@ -92,7 +92,7 @@
         </materialDesign:Card>
 
         <materialDesign:Card Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Margin="4" Visibility="{Binding PanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ContentControl  Content="{Binding PanelControl}" Margin="4"/>
+            <ContentControl  Content="{Binding PanelControl}" Margin="4" IsEnabled="{Binding EditIsEnabled}"/>
         </materialDesign:Card>
 
         <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Margin="8"/>

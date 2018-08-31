@@ -10,7 +10,7 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 {
     public class RemoveBackgroundPanelViewModel:ViewModelBase
     {
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
 
         public bool RemoveBackgroundActive
         {

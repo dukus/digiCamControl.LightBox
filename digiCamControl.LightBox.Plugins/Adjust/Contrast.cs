@@ -6,7 +6,7 @@ namespace digiCamControl.LightBox.Plugins.Adjust
 {
     public class Contrast: IAdjustPlugin
     {
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
         public ValueItemCollection Variables { get; set; }
 
         public int Brightness
@@ -63,7 +63,7 @@ namespace digiCamControl.LightBox.Plugins.Adjust
             if (Normalize)
                 image.Normalize();
             image.BrightnessContrast(new Percentage(Brightness), new Percentage(ContrastValue));
-            image.Modulate(new Percentage(100),new Percentage(Saturation+100),new Percentage(Hue+100));
+            image.Modulate(new Percentage(100), new Percentage(Saturation + 100), new Percentage(Hue + 100));
             return image;
         }
 

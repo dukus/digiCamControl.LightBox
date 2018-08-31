@@ -16,7 +16,7 @@ namespace digiCamControl.LightBox.Plugins
     public class CapturePanelViewModel : ViewModelBase,IInit
     {
         public RelayCommand CaptureCommand { get; set; }
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
         public ICameraDevice CameraDevice => ServiceProvider.Instance.DeviceManager.SelectedCameraDevice;
         private ConcurrentQueue<PhotoCapturedEventArgs> _fileStack = new ConcurrentQueue<PhotoCapturedEventArgs>();
         private bool _transferInProgress;
@@ -105,17 +105,9 @@ namespace digiCamControl.LightBox.Plugins
         public CapturePanelViewModel()
         {
             CaptureCommand = new RelayCommand(Capture);
-            if (!IsInDesignMode)
+            if (IsInDesignMode)
             {
-               
-                if (CaptureCount < 1)
-                    CaptureCount = 1;
-                if (Math.Abs(CaptureWait) < 0.01)
-                    CaptureWait = 1;
-            }
-            else
-            {
-                ServiceProvider.Instance.Session = new Session();
+                ServiceProvider.Instance.Profile = new Profile();
             }
 
         }
@@ -253,6 +245,10 @@ namespace digiCamControl.LightBox.Plugins
         public void Init()
         {
             ServiceProvider.Instance.DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
+            if (CaptureCount < 1)
+                CaptureCount = 1;
+            if (Math.Abs(CaptureWait) < 0.01)
+                CaptureWait = 1;
         }
 
         public void UnInit()

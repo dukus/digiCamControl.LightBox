@@ -24,7 +24,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         public static ServiceProvider Instance => _instance ?? (_instance = new ServiceProvider());
         public CameraDeviceManager DeviceManager { get; set; }
 
-        public Session Session { get; set; }
+        public Profile Profile { get; set; }
 
         public List<IAdjustPlugin> AdjustPlugins { get; set; }
         public List<IExportPlugin> ExportPlugins { get; set; }
@@ -34,7 +34,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             var LogFile = Path.Combine(Settings.Instance.DataFolder, "Logs", "app.log");
             Configure(LogFile);
             DeviceManager = new CameraDeviceManager();
-            Session = new Session();
+            Profile = new Profile();
             AdjustPlugins = new List<IAdjustPlugin>();
             ExportPlugins = new List<IExportPlugin>();
         }
@@ -50,6 +50,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             try
             {
                 Log.Debug("Application version : " + Assembly.GetEntryAssembly().GetName().Version);
+                Directory.CreateDirectory(Settings.Instance.ProfileFolder);
             }
             catch { }
         }

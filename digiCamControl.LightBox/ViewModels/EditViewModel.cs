@@ -29,12 +29,23 @@ namespace digiCamControl.LightBox.ViewModels
         private bool _cropVisible;
         private bool _panelVisible;
         private ContentControl _panelControl;
+        private bool _editIsEnabled;
 
         public List<IPanelItem> PanelItems { get; set; }
         public Rect CropRect => new Rect(CropX, CropY, CropWidth, CropHeight);
         public ICameraDevice CameraDevice => ServiceProvider.Instance.DeviceManager.SelectedCameraDevice;
 
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
+
+        public bool EditIsEnabled
+        {
+            get { return _editIsEnabled; }
+            set
+            {
+                _editIsEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
         public FileItem SelectedItem
@@ -48,8 +59,13 @@ namespace digiCamControl.LightBox.ViewModels
 
                 if (SelectedItem != null)
                 {
+                    EditIsEnabled = true;
                     Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
+                }
+                else
+                {
+                    EditIsEnabled = false;
                 }
             }
         }
@@ -245,6 +261,9 @@ namespace digiCamControl.LightBox.ViewModels
 
         public void Init()
         {
+            ServiceProvider.Instance.Message += Instance_Message;
+            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            RaisePropertyChanged(() => Session);
             if (Session.Files.Count > 0)
             {
                 foreach (var item in Session.Files)
@@ -258,9 +277,6 @@ namespace digiCamControl.LightBox.ViewModels
             {
                 (item.Panel?.DataContext as IInit)?.Init();
             }
-
-            ServiceProvider.Instance.Message += Instance_Message;
-            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
         }
 
         private void Variables_ValueChangedEvent(object sender, ValueItem item)

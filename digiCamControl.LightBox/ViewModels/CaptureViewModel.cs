@@ -30,6 +30,7 @@ namespace digiCamControl.LightBox.ViewModels
         private ContentControl _panelControl;
         private FileItem _selectedItem;
         private bool _panelVisible;
+        private Profile _session;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -154,7 +155,7 @@ namespace digiCamControl.LightBox.ViewModels
         public Rect CropRect => new Rect(CropX, CropY, CropWidth, CropHeight);
         public ICameraDevice CameraDevice => ServiceProvider.Instance.DeviceManager.SelectedCameraDevice;
 
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
 
         public RelayCommand<IPanelItem> ItemCommand { get; set; }
 
@@ -538,6 +539,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public void Init()
         {
+            RaisePropertyChanged(() => Session);
             foreach (var item in Session.Files)
             {
                 Utils.DeleteFile(item.PreviewFile);

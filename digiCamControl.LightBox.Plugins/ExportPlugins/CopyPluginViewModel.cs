@@ -36,7 +36,7 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
         {
             SetBaseDefault();
             Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            FileNameTemplate = "{SessionName}//DSC_{ImageNumber:N2}";
+            FileNameTemplate = "{SessionName}\\DSC_{ImageNumber:N2}";
         }
     }
 }

@@ -13,7 +13,7 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 {
     public class ContrastPanelViewModel:ViewModelBase, IInit
     {
-        public Session Session => ServiceProvider.Instance.Session;
+        public Profile Session => ServiceProvider.Instance.Profile;
 
         public int Brightness
         {

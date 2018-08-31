@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Activities.Statements;
+using System.Collections.ObjectModel;
+using System.IO;
+using CameraControl.Devices;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Views;
@@ -13,24 +13,60 @@ namespace digiCamControl.LightBox.ViewModels
 {
     public class StartViewModel : ViewModelBase, IInit
     {
-        public Session Session => ServiceProvider.Instance.Session;
+
+
+        public Profile Profile
+        {
+            get { return ServiceProvider.Instance.Profile;; }
+            set
+            {
+                ServiceProvider.Instance.Profile  = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Profile> Profiles { get; set; }
+
 
         public RelayCommand NextCommand { get; set; }
 
         public StartViewModel()
         {
             NextCommand = new RelayCommand(Next);
+            Profiles = new ObservableCollection<Profile>();
+           
         }
 
         private void Next()
         {
-            Session.Save();
+            Profile.Save();
             ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Capture);
         }
 
         public void Init()
         {
-            
+            try
+            {
+                Profiles.Clear();
+                var files = Directory.GetFiles(Settings.Instance.ProfileFolder, "*.json");
+                foreach (var file in files)
+                {
+                    var p=Profile.Load(file);
+                    if (Profile != null)
+                        Profiles.Add(p);
+                }
+                if (Profiles.Count == 0)
+                {
+                    var newP = new Profile() {Name = "Profile1", SessionName = "Session", SessionCounter = 1};
+                    newP.Save();
+                    Profiles.Add(newP);
+                }
+                Profile = Profiles[0];
+            }
+            catch (Exception e)
+            {
+                Log.Debug("Unable to load profile list ",e);
+            }   
         }
 
         public void UnInit()

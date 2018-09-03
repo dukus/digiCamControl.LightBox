@@ -53,14 +53,15 @@ namespace digiCamControl.LightBox.ViewModels
             get { return _selectedItem; }
             set
             {
-                _selectedItem?.Variables.CopyFrom(Session.Variables);
+                //_selectedItem?.Variables.CopyFrom(Session.Variables);
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
 
                 if (SelectedItem != null)
                 {
+                    ServiceProvider.Instance.OnMessage(Messages.ItemChanged, null, _selectedItem);
                     EditIsEnabled = true;
-                    Session.Variables.CopyFrom(SelectedItem.Variables);
+                   // Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
                 }
                 else
@@ -219,23 +220,40 @@ namespace digiCamControl.LightBox.ViewModels
                 force = item.ReloadRequired || force;
                 if (File.Exists(item.TempFile))
                 {
-                    ServiceProvider.Instance.OnMessage(Messages.StopLiveView);
-                    if (!File.Exists(item.PreviewProsessedFile) || force)
+                    item.IsBusy = true;
+                    if (!File.Exists(item.PreviewProsessedFile))
                     {
-                        item.IsBusy = true;
-                        IMagickImage image = new MagickImage(item.TempFile);
+                        item.PreviewProsessedFile = Path.Combine(Settings.Instance.TempFolder,
+                            Path.GetRandomFileName() + ".png");
+                        IMagickImage magickImage = new MagickImage(item.TempFile);
+
+                        foreach (var plugin in ServiceProvider.Instance.PreAdjustPlugins)
+                        {
+                            magickImage = plugin.Execute(magickImage, Session.Variables);
+                        }
+                        MagickGeometry geometry = new MagickGeometry(1090, 0);
+                        geometry.IgnoreAspectRatio = false;
+                        magickImage.Resize(geometry);
+                        magickImage.Write(item.PreviewProsessedFile);
+                    }
+
+                    if (!File.Exists(item.PreviewFile) || force)
+                    {
+
+                        IMagickImage image = new MagickImage(item.PreviewProsessedFile);
 
                         string fileName = Path.Combine(Settings.Instance.TempFolder,
                             Path.GetRandomFileName() + ".png");
-                        item.PreviewProsessedFile = force ? item.PreviewProsessedFile : fileName;
-                        MagickGeometry geometry = new MagickGeometry(1090, 0);
-                        geometry.IgnoreAspectRatio = false;
-                        image.Resize(geometry);
+                        item.PreviewFile = force && File.Exists(item.PreviewFile) ? item.PreviewFile : fileName;
+
                         foreach (var plugin in ServiceProvider.Instance.AdjustPlugins)
                         {
                             image = plugin.Execute(image, item.Variables);
                         }
-                        image.Write(item.PreviewProsessedFile);
+                        MagickGeometry geometry = new MagickGeometry(1090, 0);
+                        geometry.IgnoreAspectRatio = false;
+
+                        image.Write(item.PreviewFile);
                         var bitmap = image.ToBitmapSource();
                         bitmap.Freeze();
                         BitmapSource = bitmap;
@@ -248,7 +266,7 @@ namespace digiCamControl.LightBox.ViewModels
                     }
                     else
                     {
-                        BitmapSource = Utils.LoadImage(item.PreviewProsessedFile);
+                        BitmapSource = Utils.LoadImage(item.PreviewFile);
                     }
                 }
                 item.IsBusy = false;
@@ -264,18 +282,22 @@ namespace digiCamControl.LightBox.ViewModels
             ServiceProvider.Instance.Message += Instance_Message;
             Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
             RaisePropertyChanged(() => Session);
+            foreach (var item in PanelItems)
+            {
+                (item.Panel?.DataContext as IInit)?.Init();
+            }
+            if (PanelItems.Count > 0)
+                ExecuteItem(PanelItems[0]);
+
             if (Session.Files.Count > 0)
             {
                 foreach (var item in Session.Files)
                 {
                     Utils.DeleteFile(item.PreviewProsessedFile);
-                    LoadImage(item);
+                    Utils.DeleteFile(item.PreviewFile);
+                    LoadImage(item,true);
                 }
                 SelectedItem = Session.Files[0];
-            }
-            foreach (var item in PanelItems)
-            {
-                (item.Panel?.DataContext as IInit)?.Init();
             }
         }
 
@@ -302,9 +324,15 @@ namespace digiCamControl.LightBox.ViewModels
         {
             ServiceProvider.Instance.Message -= Instance_Message;
             Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            PanelControl = null;
             foreach (var item in PanelItems)
             {
                 (item.Panel?.DataContext as IInit)?.UnInit();
+            }
+            foreach (var item in Session.Files)
+            {
+                Utils.DeleteFile(item.PreviewProsessedFile);
+                Utils.DeleteFile(item.PreviewFile);
             }
         }
 
@@ -320,7 +348,7 @@ namespace digiCamControl.LightBox.ViewModels
                 item.ReloadRequired = true;
             }
             _loadInProgress = true;
-            SelectedItem.Variables.CopyFrom(Session.Variables);
+         //   SelectedItem.Variables.CopyFrom(Session.Variables);
             LoadImage(SelectedItem, true);
             if (_loadRequest)
                 LoadImage(SelectedItem,true);

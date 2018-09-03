@@ -16,7 +16,7 @@ namespace digiCamControl.LightBox
             try
             {
                 ServiceProvider.Instance.Configure();
-                ServiceProvider.Instance.AdjustPlugins.Add(new Crop());
+                ServiceProvider.Instance.PreAdjustPlugins.Add(new Crop());
                 ServiceProvider.Instance.AdjustPlugins.Add(new Contrast());
                 ServiceProvider.Instance.AdjustPlugins.Add(new RemoveBackground());
                 ServiceProvider.Instance.ExportPlugins.Add(new CopyPlugin());

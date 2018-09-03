@@ -12,7 +12,7 @@ namespace digiCamControl.LightBox.Plugins.Adjust
 {
     public class RemoveBackground: IAdjustPlugin
     {
-        public Profile Session => ServiceProvider.Instance.Profile;
+        
         public ValueItemCollection Variables { get; set; }
 
 

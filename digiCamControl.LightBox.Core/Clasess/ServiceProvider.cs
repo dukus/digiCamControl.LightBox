@@ -26,6 +26,8 @@ namespace digiCamControl.LightBox.Core.Clasess
 
         public Profile Profile { get; set; }
 
+        public List<IAdjustPlugin> PreAdjustPlugins { get; set; }
+
         public List<IAdjustPlugin> AdjustPlugins { get; set; }
         public List<IExportPlugin> ExportPlugins { get; set; }
 
@@ -35,6 +37,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             Configure(LogFile);
             DeviceManager = new CameraDeviceManager();
             Profile = new Profile();
+            PreAdjustPlugins = new List<IAdjustPlugin>();
             AdjustPlugins = new List<IAdjustPlugin>();
             ExportPlugins = new List<IExportPlugin>();
         }

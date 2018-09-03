@@ -47,6 +47,11 @@ namespace digiCamControl.LightBox.Core.Clasess
             Variables = new ValueItemCollection();
         }
 
+        public FileItem()
+        {
+            Variables = new ValueItemCollection();
+        }
+
         public void CleanUp()
         {
             Utils.DeleteFile(TempFile);

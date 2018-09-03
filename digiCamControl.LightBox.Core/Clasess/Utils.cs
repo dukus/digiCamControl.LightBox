@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Media.Imaging;
@@ -106,6 +108,13 @@ namespace digiCamControl.LightBox.Core.Clasess
                     }
                 }
             } while (retry && retryNum < maxRetry);
+        }
+
+        public static List<string> GetPropertieNames(Type type)
+        {
+            var properties = type.GetProperties();
+
+            return properties.Select(property => property.Name).ToList();
         }
     }
 }

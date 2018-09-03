@@ -4,20 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Core.Interfaces;
 using GalaSoft.MvvmLight;
 
 namespace digiCamControl.LightBox.Plugins.AdjustPanel
 {
-    public class RemoveBackgroundPanelViewModel:ViewModelBase
+    public class RemoveBackgroundPanelViewModel:ViewModelBase,IInit
     {
-        public Profile Session => ServiceProvider.Instance.Profile;
+        public FileItem FileItem { get; set; }
+
 
         public bool RemoveBackgroundActive
         {
-            get { return Session.Variables.GetBool("RemoveBackgroundActive"); }
+            get { return FileItem.Variables.GetBool("RemoveBackgroundActive"); }
             set
             {
-                Session.Variables["RemoveBackgroundActive"] = value;
+                FileItem.Variables["RemoveBackgroundActive"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -25,10 +27,10 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public int RemoveBackgroundThreshold
         {
-            get { return Session.Variables.GetInt("RemoveBackgroundThreshold"); }
+            get { return FileItem.Variables.GetInt("RemoveBackgroundThreshold"); }
             set
             {
-                Session.Variables["RemoveBackgroundThreshold"] = value;
+                FileItem.Variables["RemoveBackgroundThreshold"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -36,13 +38,49 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public double RemoveBackgroundFeather
         {
-            get { return Session.Variables.GetDouble("RemoveBackgroundFeather"); }
+            get { return FileItem.Variables.GetDouble("RemoveBackgroundFeather"); }
             set
             {
-                Session.Variables["RemoveBackgroundFeather"] = value;
+                FileItem.Variables["RemoveBackgroundFeather"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
         }
+
+        public RemoveBackgroundPanelViewModel()
+        {
+            FileItem = new FileItem();
+        }
+
+
+        public void Init()
+        {
+            FileItem.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            ServiceProvider.Instance.Message += Instance_Message;
+        }
+
+        private void Instance_Message(object sender, MessageArgs message)
+        {
+            if (message.Message == Messages.ItemChanged)
+            {
+                FileItem = (FileItem)message.Param;
+                foreach (var name in Utils.GetPropertieNames(this.GetType()))
+                {
+                    RaisePropertyChanged(name);
+                }
+            }
+        }
+
+        public void UnInit()
+        {
+            FileItem.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            ServiceProvider.Instance.Message -= Instance_Message;
+        }
+
+        private void Variables_ValueChangedEvent(object sender, ValueItem item)
+        {
+            RaisePropertyChanged(item.Name);
+        }
     }
 }
+

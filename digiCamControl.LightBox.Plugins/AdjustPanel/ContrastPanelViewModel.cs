@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using digiCamControl.LightBox.Core.Clasess;
+﻿using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
-using digiCamControl.LightBox.Plugins.Adjust;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -13,14 +7,16 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 {
     public class ContrastPanelViewModel:ViewModelBase, IInit
     {
-        public Profile Session => ServiceProvider.Instance.Profile;
+       
+        public FileItem FileItem { get; set; }
+
 
         public int Brightness
         {
-            get { return Session.Variables.GetInt("Brightness"); }
+            get { return FileItem.Variables.GetInt("Brightness"); }
             set
             {
-                Session.Variables["Brightness"] = value;
+                FileItem.Variables["Brightness"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -28,10 +24,10 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public int Contrast
         {
-            get { return Session.Variables.GetInt("Contrast"); }
+            get { return FileItem.Variables.GetInt("Contrast"); }
             set
             {
-                Session.Variables["Contrast"] = value;
+                FileItem.Variables["Contrast"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -39,10 +35,10 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public int Saturation
         {
-            get { return Session.Variables.GetInt("Saturation"); }
+            get { return FileItem.Variables.GetInt("Saturation"); }
             set
             {
-                Session.Variables["Saturation"] = value;
+                FileItem.Variables["Saturation"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -50,10 +46,10 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public int Hue
         {
-            get { return Session.Variables.GetInt("Hue"); }
+            get { return FileItem.Variables.GetInt("Hue"); }
             set
             {
-                Session.Variables["Hue"] = value;
+                FileItem.Variables["Hue"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -61,10 +57,10 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public bool Normalize
         {
-            get { return Session.Variables.GetBool("Normalize"); }
+            get { return FileItem.Variables.GetBool("Normalize"); }
             set
             {
-                Session.Variables["Normalize"] = value;
+                FileItem.Variables["Normalize"] = value;
                 RaisePropertyChanged();
                 ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
             }
@@ -74,7 +70,9 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public ContrastPanelViewModel()
         {
+            FileItem = new FileItem();
             ResetCommand = new RelayCommand(Reset);
+
         }
 
         private void Reset()
@@ -89,12 +87,26 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
 
         public void Init()
         {
-            Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            FileItem.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            ServiceProvider.Instance.Message += Instance_Message;
+        }
+
+        private void Instance_Message(object sender, MessageArgs message)
+        {
+            if (message.Message == Messages.ItemChanged)
+            {
+                FileItem = (FileItem) message.Param;
+                foreach (var name in Utils.GetPropertieNames(this.GetType()))
+                {
+                    RaisePropertyChanged(name);
+                }
+            }
         }
 
         public void UnInit()
         {
-            Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            FileItem.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            ServiceProvider.Instance.Message -= Instance_Message;
         }
 
         private void Variables_ValueChangedEvent(object sender, ValueItem item)

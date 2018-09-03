@@ -60,13 +60,13 @@ namespace digiCamControl.LightBox.ViewModels
             get { return _selectedItem; }
             set
             {
-                _selectedItem?.Variables.CopyFrom(Session.Variables);
+              //  _selectedItem?.Variables.CopyFrom(Session.Variables);
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
 
                 if (SelectedItem != null)
                 {
-                    Session.Variables.CopyFrom(SelectedItem.Variables);
+                  //  Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
                 }
             }
@@ -543,6 +543,7 @@ namespace digiCamControl.LightBox.ViewModels
             foreach (var item in Session.Files)
             {
                 Utils.DeleteFile(item.PreviewFile);
+                LoadImage(item);
             }
 
             foreach (var item in PanelItems)
@@ -552,6 +553,12 @@ namespace digiCamControl.LightBox.ViewModels
             ServiceProvider.Instance.Message += Instance_Message;
             Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
             StartLiveView();
+            RaisePropertyChanged(() => CropRect);
+            RaisePropertyChanged(() => CropWidth);
+            RaisePropertyChanged(() => CropHeight);
+            RaisePropertyChanged(() => CropX);
+            RaisePropertyChanged(() => CropY);
+            RaisePropertyChanged(() => CropVisible);
         }
 
         public void UnInit()

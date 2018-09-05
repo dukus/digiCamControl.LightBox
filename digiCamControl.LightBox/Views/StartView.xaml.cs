@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using digiCamControl.LightBox.ViewModels;
 
 namespace digiCamControl.LightBox.Views
 {
@@ -23,6 +24,15 @@ namespace digiCamControl.LightBox.Views
         public StartView()
         {
             InitializeComponent();
+        }
+
+        private void DialogHost_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (eventArgs.Parameter is string)
+            {
+                ((StartViewModel) DataContext).Profile.Name = (string) eventArgs.Parameter;
+                ((StartViewModel) DataContext).Profile.Save();
+            }
         }
     }
 }

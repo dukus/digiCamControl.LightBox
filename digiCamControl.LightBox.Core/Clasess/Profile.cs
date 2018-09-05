@@ -3,15 +3,28 @@ using System.Collections.ObjectModel;
 using System.IO;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
+using GalaSoft.MvvmLight;
 using Newtonsoft.Json;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
-    public class Profile
+    public class Profile:ViewModelBase
     {
-        public string Name { get; set; }
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public string SessionName { get; set; }
         public int SessionCounter { get; set; }
+        public string Id { get; set; }
         [JsonIgnore]
         public AsyncObservableCollection<FileItem> Files { get; set; }
         public ValueItemCollection Variables { get; set; }
@@ -22,6 +35,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             Files = new AsyncObservableCollection<FileItem>();
             Variables = new ValueItemCollection();
             ExportItems = new AsyncObservableCollection<ExportItem>();
+            Id = Guid.NewGuid().ToString();
         }
 
         public void Save()
@@ -29,7 +43,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             try
             {
                 string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-                string file = Path.Combine(Settings.Instance.ProfileFolder, Name + ".json");
+                string file = GetFileName();
                 Utils.CreateFolder(file);
                 File.WriteAllText(file,json);
             }
@@ -56,6 +70,11 @@ namespace digiCamControl.LightBox.Core.Clasess
                 Log.Error("Error to load sesion", e);
             }
             return new Profile();
+        }
+
+        public string GetFileName()
+        {
+            return Path.Combine(Settings.Instance.ProfileFolder, Id + ".json");
         }
 
         public override string ToString()

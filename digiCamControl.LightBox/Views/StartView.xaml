@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:digiCamControl.LightBox.Views"
              xmlns:viewModels="clr-namespace:digiCamControl.LightBox.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="600">
     <UserControl.Resources>
@@ -36,41 +37,63 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <materialDesign:Card Grid.Column="1" Grid.Row="1" VerticalAlignment="Stretch">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Margin="4">
-                    <DockPanel  HorizontalAlignment="Stretch" >
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                            <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" >
-                                <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
-                            </Button>
-                            <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" >
-                                <materialDesign:PackIcon Kind="Pencil" Height="24" Width="24" />
-                            </Button>
-                            <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" >
-                                <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
-                            </Button>
-
-                        </StackPanel>
-                        <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding Profile}" materialDesign:HintAssist.Hint="Profile"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
-                    </DockPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding Profile.SessionName}" materialDesign:HintAssist.Hint="Session name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0"/>
-                        <TextBox Text="{Binding Profile.SessionCounter}" materialDesign:HintAssist.Hint="Session Counter"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0" Grid.Column="1" />
-                    </Grid>
+        <materialDesign:DialogHost Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CloseOnClickAway="True" DialogClosing="DialogHost_DialogClosing">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16">
+                    <TextBlock>Profile name</TextBlock>
+                    <TextBox Margin="4" x:Name="ProfileNameTextBox" Text="{Binding Profile.Name,Mode=OneWay}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                IsDefault="True" Margin="0 8 8 0" Command="materialDesign:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <Binding ElementName="ProfileNameTextBox" Path="Text"/>
+                            </Button.CommandParameter>
+                            ACCEPT
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="materialDesign:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            CANCEL
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
-            </Grid>
-        </materialDesign:Card>
+            </materialDesign:DialogHost.DialogContent>
+            <materialDesign:Card  VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Margin="4">
+                        <DockPanel  HorizontalAlignment="Stretch" >
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding AddProfileCommand}" >
+                                    <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
+                                </Button>
+                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" >
+                                    <materialDesign:PackIcon Kind="Pencil" Height="24" Width="24" />
+                                </Button>
+                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding DelProfileCommand}">
+                                    <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                                </Button>
 
+                            </StackPanel>
+                            <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding Profile}" materialDesign:HintAssist.Hint="Profile"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch" DisplayMemberPath="Name"/>
+                        </DockPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding Profile.SessionName}" materialDesign:HintAssist.Hint="Session name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0"/>
+                            <TextBox Text="{Binding Profile.SessionCounter}" materialDesign:HintAssist.Hint="Session Counter"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0" Grid.Column="1" />
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </materialDesign:Card>
+        </materialDesign:DialogHost>
         <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="16" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Command="{Binding NextCommand}">
             <materialDesign:PackIcon Kind="Settings" Height="24" Width="24" />
         </Button>

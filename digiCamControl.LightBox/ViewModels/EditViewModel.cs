@@ -213,7 +213,7 @@ namespace digiCamControl.LightBox.ViewModels
             ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Capture);
         }
 
-        private void LoadImage(FileItem item,bool force=false)
+        private void LoadImage(FileItem item, bool force = false, bool loadPreview = true)
         {
             try
             {
@@ -254,9 +254,12 @@ namespace digiCamControl.LightBox.ViewModels
                         geometry.IgnoreAspectRatio = false;
 
                         image.Write(item.PreviewFile);
-                        var bitmap = image.ToBitmapSource();
-                        bitmap.Freeze();
-                        BitmapSource = bitmap;
+                        if (loadPreview)
+                        {
+                            var bitmap = image.ToBitmapSource();
+                            bitmap.Freeze();
+                            BitmapSource = bitmap;
+                        }
                         geometry.Width = 200;
                         image.Sample(geometry);
                         item.Thumb = image.ToBitmapSource();
@@ -288,17 +291,31 @@ namespace digiCamControl.LightBox.ViewModels
             }
             if (PanelItems.Count > 0)
                 ExecuteItem(PanelItems[0]);
+            Task.Factory.StartNew(LoadImageThumbs);
+        }
 
-            if (Session.Files.Count > 0)
+        private void LoadImageThumbs()
+        {
+            ServiceProvider.Instance.OnMessage(Messages.SetBusy, "Loading images ...");
+            try
             {
-                foreach (var item in Session.Files)
+                if (Session.Files.Count > 0)
                 {
-                    Utils.DeleteFile(item.PreviewProsessedFile);
-                    Utils.DeleteFile(item.PreviewFile);
-                    LoadImage(item,true);
+                    foreach (var item in Session.Files)
+                    {
+                        Utils.DeleteFile(item.PreviewProsessedFile);
+                        Utils.DeleteFile(item.PreviewFile);
+                        LoadImage(item, true, false);
+                    }
+                    SelectedItem = Session.Files[0];
                 }
-                SelectedItem = Session.Files[0];
+
             }
+            catch (Exception e)
+            {
+                Log.Error("Unable to load image ",e);
+            }
+            ServiceProvider.Instance.OnMessage(Messages.ClearBusy);
         }
 
         private void Variables_ValueChangedEvent(object sender, ValueItem item)

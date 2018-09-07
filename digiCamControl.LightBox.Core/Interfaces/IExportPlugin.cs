@@ -9,7 +9,7 @@ namespace digiCamControl.LightBox.Core.Interfaces
         string Icon { get;  }
         string Description { get;  }
         string Id { get; }
-        bool Export(ExportItem item);
+        bool Export(ExportItem item, FileItem fileItem, Profile profile);
         ContentControl GetConfig(ExportItem item);
         /// <summary>
         /// Return a instancee of a default settings for a plugin

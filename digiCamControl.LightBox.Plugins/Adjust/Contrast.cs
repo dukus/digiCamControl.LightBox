@@ -62,8 +62,10 @@ namespace digiCamControl.LightBox.Plugins.Adjust
             Variables = values;
             if (Normalize)
                 image.Normalize();
-            image.BrightnessContrast(new Percentage(Brightness), new Percentage(ContrastValue));
-            image.Modulate(new Percentage(100), new Percentage(Saturation + 100), new Percentage(Hue + 100));
+            if (Brightness != 0 || ContrastValue != 0)
+                image.BrightnessContrast(new Percentage(Brightness), new Percentage(ContrastValue));
+            if (Saturation != 0 || Hue != 0)
+                image.Modulate(new Percentage(100), new Percentage(Saturation + 100), new Percentage(Hue + 100));
             return image;
         }
 

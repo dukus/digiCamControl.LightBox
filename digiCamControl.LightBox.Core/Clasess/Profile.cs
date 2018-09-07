@@ -59,7 +59,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public Profile Load(string filename)
+        public static Profile Load(string filename)
         {
             try
             {
@@ -80,6 +80,22 @@ namespace digiCamControl.LightBox.Core.Clasess
         public override string ToString()
         {
             return Name;
+        }
+
+        public void CleanUp()
+        {
+            try
+            {
+                foreach (FileItem item in Files)
+                {
+                    item.CleanUp();
+                }
+                Files.Clear();
+            }
+            catch (Exception e)
+            {
+                Log.Debug("Cleanup error", e);
+            }
         }
     }
 }

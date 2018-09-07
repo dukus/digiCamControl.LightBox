@@ -48,6 +48,7 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
         }
 
 
+
         public void SetBaseDefault()
         {
             Resize = false;

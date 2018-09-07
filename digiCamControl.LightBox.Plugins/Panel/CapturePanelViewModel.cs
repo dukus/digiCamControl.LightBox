@@ -249,6 +249,11 @@ namespace digiCamControl.LightBox.Plugins
                 CaptureCount = 1;
             if (Math.Abs(CaptureWait) < 0.01)
                 CaptureWait = 1;
+
+            foreach (var names in Utils.GetPropertieNames(this.GetType()))
+            {
+                RaisePropertyChanged(names);
+            }
         }
 
         public void UnInit()

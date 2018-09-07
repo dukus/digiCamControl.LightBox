@@ -38,8 +38,8 @@
                                      VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12 12 12 12">
                     <StackPanel Orientation="Vertical">
 
-                        <!--<ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"  Value="50" IsIndeterminate="True" />
-                        <Label Content="{translation:Translate Processing}"/>-->
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"  Value="50" IsIndeterminate="True" />
+                        <Label Content="{Binding BusyMessage}"/>
                     </StackPanel>
                 </materialDesign:Card>
             </materialDesign:DialogHost.DialogContent>

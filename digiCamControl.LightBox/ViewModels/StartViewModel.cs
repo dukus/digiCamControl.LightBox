@@ -62,7 +62,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void AddProfile()
         {
-            var newP = new Profile() { Name = "NewProfile1", SessionName = "Session", SessionCounter = 1 };
+            var newP = GetNewProfile("NewProfile1");
             newP.Save();
             Profiles.Add(newP);
             Profile = newP;
@@ -75,6 +75,18 @@ namespace digiCamControl.LightBox.ViewModels
             ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Capture);
         }
 
+        private Profile GetNewProfile(string name)
+        {
+            var newP = new Profile { Name = name, SessionName = "Session", SessionCounter = 1 };
+            var obj = ServiceProvider.Instance.ExportPlugins[0];
+            var item = obj.GetDefault();
+            item.Name = "Export => " + obj.Name;
+            item.Id = obj.Id;
+            item.Icon = obj.Icon;
+            newP.ExportItems.Add(item);
+            return newP;
+        }
+
         public void Init()
         {
             try
@@ -83,13 +95,13 @@ namespace digiCamControl.LightBox.ViewModels
                 var files = Directory.GetFiles(Settings.Instance.ProfileFolder, "*.json");
                 foreach (var file in files)
                 {
-                    var p=Profile.Load(file);
-                    if (Profile != null)
+                    var p = Profile.Load(file);
+                    if (p != null)
                         Profiles.Add(p);
                 }
                 if (Profiles.Count == 0)
                 {
-                    var newP = new Profile() {Name = "Profile1", SessionName = "Session", SessionCounter = 1};
+                    var newP = GetNewProfile("Profile1");
                     newP.Save();
                     Profiles.Add(newP);
                 }

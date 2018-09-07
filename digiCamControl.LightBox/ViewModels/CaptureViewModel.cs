@@ -30,7 +30,6 @@ namespace digiCamControl.LightBox.ViewModels
         private ContentControl _panelControl;
         private FileItem _selectedItem;
         private bool _panelVisible;
-        private Profile _session;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -198,29 +197,20 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void Back()
         {
-            if ( Session.Files.Count>0 && 
-                MessageBox.Show( "You are sure do you want to continue ?\nAll captured images will be lost!!!", "Warning",
-                    MessageBoxButton.YesNo,MessageBoxImage.Warning,MessageBoxResult.No,MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
+            if (Session.Files.Count > 0 &&
+                MessageBox.Show("You are sure do you want to continue ?\nAll captured images will be lost!!!",
+                    "Warning",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No,
+                    MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
             {
-                CleanUp();
+                Session.CleanUp();
                 ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Start);
             }
-        }
+            if (Session.Files.Count == 0)
+            {
+                ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Start);
+            }
 
-        private void CleanUp()
-        {
-            try
-            {
-                foreach (FileItem item in Session.Files)
-                {
-                    item.CleanUp();
-                }
-                Session.Files.Clear();
-            }
-            catch (Exception e)
-            {
-                Log.Debug("Cleanup error", e);
-            }
         }
 
         private void Variables_ValueChangedEvent(object sender, ValueItem item)
@@ -540,11 +530,7 @@ namespace digiCamControl.LightBox.ViewModels
         public void Init()
         {
             RaisePropertyChanged(() => Session);
-            foreach (var item in Session.Files)
-            {
-                Utils.DeleteFile(item.PreviewFile);
-                LoadImage(item);
-            }
+            Task.Factory.StartNew(LoadImageThumbs);
 
             foreach (var item in PanelItems)
             {
@@ -559,6 +545,24 @@ namespace digiCamControl.LightBox.ViewModels
             RaisePropertyChanged(() => CropX);
             RaisePropertyChanged(() => CropY);
             RaisePropertyChanged(() => CropVisible);
+        }
+
+        public void LoadImageThumbs()
+        {
+            ServiceProvider.Instance.OnMessage(Messages.SetBusy, "Loading images ...");
+            try
+            {
+                foreach (var item in Session.Files)
+                {
+                    Utils.DeleteFile(item.PreviewFile);
+                    LoadImage(item);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Unable to load thumbs", e);
+            }
+            ServiceProvider.Instance.OnMessage(Messages.ClearBusy);
         }
 
         public void UnInit()

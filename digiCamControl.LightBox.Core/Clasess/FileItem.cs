@@ -12,7 +12,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string TempFile { get; set; }
         public string PreviewFile { get; set; }
         public string PreviewProsessedFile { get; set; }
-        
+        public int ImageNumber { get; set; }
         public bool ReloadRequired { get; set; }
 
         public ValueItemCollection Variables { get; set; }

@@ -21,6 +21,8 @@ namespace digiCamControl.LightBox.ViewModels
         private string _title;
         private ViewEnum _currentLayout;
         private Dictionary<ViewEnum, ContentControl> _contentControls = new Dictionary<ViewEnum, ContentControl>();
+        private bool _isBusy;
+        private string _busyMessage;
 
         public ContentControl ContentControl
         {
@@ -51,6 +53,27 @@ namespace digiCamControl.LightBox.ViewModels
                 RaisePropertyChanged(() => Title);
             }
         }
+
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string BusyMessage
+        {
+            get { return _busyMessage; }
+            set
+            {
+                _busyMessage = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         public SnackbarMessageQueue MessageQueue { get; set; }
 
@@ -132,10 +155,11 @@ namespace digiCamControl.LightBox.ViewModels
             switch (message.Message)
             {
                 case Messages.SetBusy:
-                    //IsBusy = true;
+                    IsBusy = true;
+                    BusyMessage = message.ParamString;
                     break;
                 case Messages.ClearBusy:
-                    //IsBusy = false;
+                    IsBusy = false;
                     break;
                 case Messages.Message:
                     MessageBox.Show(message.ParamString);

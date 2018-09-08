@@ -55,6 +55,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="133*"/>
@@ -138,5 +139,18 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
+
+        <materialDesign:Card Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Stretch">
+            <Grid>
+                <StackPanel VerticalAlignment="Top">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding ApplyAllCommand}" ToolTip="Apply for all images" IsEnabled="{Binding EditIsEnabled}">
+                        <materialDesign:PackIcon Kind="ReplyAll" Height="24" Width="24" />
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding SetDefaultCommand}" ToolTip="Save as default" IsEnabled="{Binding EditIsEnabled}">
+                        <materialDesign:PackIcon Kind="ContentSaveSettings" Height="24" Width="24" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </UserControl>

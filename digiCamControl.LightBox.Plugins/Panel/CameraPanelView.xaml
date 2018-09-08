@@ -55,6 +55,27 @@
                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
                 </Border>
             </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.CompressionSetting}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                              materialDesign:HintAssist.Hint="Quality"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.FocusMode}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                              materialDesign:HintAssist.Hint="Focus Mode"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Visibility="{Binding Available, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedCameraDevice.ExposureMeteringMode}">
+                <Border BorderThickness="1" BorderBrush="{Binding ErrorColor}" >
+                    <ComboBox IsEnabled="{Binding Path=IsEnabled}" ItemsSource="{Binding Path=Values}" SelectedValue="{Binding Path=Value}" 
+                              materialDesign:HintAssist.Hint="Exposure Metering"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                </Border>
+            </StackPanel>
             <Label Content="Manual focus"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="&lt;&lt;&lt;" Margin="4" Command="{Binding FocusFFFCommand}"/>

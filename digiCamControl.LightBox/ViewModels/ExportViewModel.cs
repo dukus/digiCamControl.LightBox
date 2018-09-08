@@ -18,10 +18,18 @@ namespace digiCamControl.LightBox.ViewModels
 
         public RelayCommand<IExportPlugin> AddCommand { get; set; }
         public RelayCommand<IExportPlugin> ExportCommand { get; set; }
+        public RelayCommand BackCommand { get; set; }
+
         public ExportViewModel()
         {
             AddCommand = new RelayCommand<IExportPlugin>(Add);
-            ExportCommand=new RelayCommand<IExportPlugin>(Export);
+            ExportCommand = new RelayCommand<IExportPlugin>(Export);
+            BackCommand = new RelayCommand(Back);
+        }
+
+        private void Back()
+        {
+            ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Adjust);
         }
 
         private void Export(IExportPlugin obj)
@@ -47,6 +55,8 @@ namespace digiCamControl.LightBox.ViewModels
 
                     for (int i = 0; i < Profile.Files.Count; i++)
                     {
+                        ServiceProvider.Instance.OnMessage(Messages.SetBusy,
+                            $"Loading images ... {i + 1}/{Profile.Files.Count}");
                         var fileItem = Profile.Files[i];
                         fileItem.ImageNumber = i + 1;
                         plugin.Export(exportItem, fileItem, Profile);

@@ -165,13 +165,34 @@ namespace digiCamControl.LightBox.ViewModels
 
         public RelayCommand BackCommand { get; set; }
         public RelayCommand NextCommand { get; set; }
-
+        public RelayCommand ApplyAllCommand { get; set; }
+        public RelayCommand SetDefaultCommand { get; set; }
+        
         public EditViewModel()
         {
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
+            ApplyAllCommand = new RelayCommand(ApplyAll);
+            SetDefaultCommand = new RelayCommand(SetDefault);
             PanelItems = new List<IPanelItem> {new ContrastPanel(), new RemoveBackgroundPanel()};
+        }
+
+        private void SetDefault()
+        {
+            if (SelectedItem != null)
+                Session.Variables.CopyFrom(SelectedItem.Variables);
+        }
+
+        private void ApplyAll()
+        {
+            if (SelectedItem == null)
+                return;
+            foreach (var item in Session.Files)
+            {
+                item.Variables.CopyFrom(SelectedItem.Variables);
+            }
+            Task.Factory.StartNew(() => LoadImageThumbs(true));
         }
 
         private void ExecuteItem(IPanelItem obj)
@@ -217,6 +238,8 @@ namespace digiCamControl.LightBox.ViewModels
         {
             try
             {
+                Stopwatch wach=new Stopwatch();
+                wach.Start();
                 force = item.ReloadRequired || force;
                 if (File.Exists(item.TempFile))
                 {
@@ -224,19 +247,22 @@ namespace digiCamControl.LightBox.ViewModels
                     if (!File.Exists(item.PreviewProsessedFile))
                     {
                         item.PreviewProsessedFile = Path.Combine(Settings.Instance.TempFolder,
-                            Path.GetRandomFileName() + ".png");
+                            Path.GetRandomFileName() + ".jpg");
                         IMagickImage magickImage = new MagickImage(item.TempFile);
 
                         foreach (var plugin in ServiceProvider.Instance.PreAdjustPlugins)
                         {
                             magickImage = plugin.Execute(magickImage, Session.Variables);
                         }
+                        Console.WriteLine(wach.Elapsed);
                         MagickGeometry geometry = new MagickGeometry(1090, 0);
                         geometry.IgnoreAspectRatio = false;
-                        magickImage.Resize(geometry);
+                        magickImage.Sample(geometry);
                         magickImage.Write(item.PreviewProsessedFile);
+                        Console.WriteLine(wach.Elapsed);
                     }
-
+                    wach.Reset();
+                    wach.Start();
                     if (!File.Exists(item.PreviewFile) || force)
                     {
 
@@ -265,12 +291,13 @@ namespace digiCamControl.LightBox.ViewModels
                         item.Thumb = image.ToBitmapSource();
                         item.Thumb.Freeze();
                         item.ReloadRequired = false;
-
+                        Console.WriteLine(wach.Elapsed);
                     }
                     else
                     {
                         BitmapSource = Utils.LoadImage(item.PreviewFile);
                     }
+                    Console.WriteLine(wach.Elapsed);
                 }
                 item.IsBusy = false;
             }
@@ -291,23 +318,30 @@ namespace digiCamControl.LightBox.ViewModels
             }
             if (PanelItems.Count > 0)
                 ExecuteItem(PanelItems[0]);
-            Task.Factory.StartNew(LoadImageThumbs);
+            Task.Factory.StartNew(()=>LoadImageThumbs(false));
         }
 
-        private void LoadImageThumbs()
+        private void LoadImageThumbs(bool fast)
         {
             ServiceProvider.Instance.OnMessage(Messages.SetBusy, "Loading images ...");
             try
             {
+                int counter = 1;
                 if (Session.Files.Count > 0)
                 {
                     foreach (var item in Session.Files)
                     {
-                        Utils.DeleteFile(item.PreviewProsessedFile);
+                        ServiceProvider.Instance.OnMessage(Messages.SetBusy,
+                            $"Loading images ... {counter}/{Session.Files.Count}");
+
+                        if (!fast)
+                            Utils.DeleteFile(item.PreviewProsessedFile);
                         Utils.DeleteFile(item.PreviewFile);
                         LoadImage(item, true, false);
+                        counter++;
                     }
-                    SelectedItem = Session.Files[0];
+                    if (!fast)
+                        SelectedItem = Session.Files[0];
                 }
 
             }

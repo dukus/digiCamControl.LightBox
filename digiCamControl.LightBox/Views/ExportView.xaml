@@ -57,7 +57,6 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-
                 <!--<Button
                     ToolTip="One">
                     <materialDesign:PackIcon Kind="Folder" Height="24" Width="24" />
@@ -73,6 +72,9 @@
                 </Button>-->
             </StackPanel>
         </materialDesign:PopupBox>
+        <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding BackCommand}">
+            <materialDesign:PackIcon Kind="ArrowLeftBold" Height="24" Width="24" />
+        </Button>
 
         <ItemsControl Grid.Column="1" ItemsSource="{Binding Profile.ExportItems }" >
             <ItemsControl.ItemTemplate>

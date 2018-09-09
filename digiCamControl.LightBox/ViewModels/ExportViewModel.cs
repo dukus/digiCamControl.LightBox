@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using Accord.IO;
 using CameraControl.Devices;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
@@ -20,11 +21,31 @@ namespace digiCamControl.LightBox.ViewModels
         public RelayCommand<IExportPlugin> ExportCommand { get; set; }
         public RelayCommand BackCommand { get; set; }
 
+        public RelayCommand<ExportItem> DeleteCommand { get; set; }
+        public RelayCommand<ExportItem> DuplicateCommand { get; set; }
+
+
         public ExportViewModel()
         {
             AddCommand = new RelayCommand<IExportPlugin>(Add);
             ExportCommand = new RelayCommand<IExportPlugin>(Export);
             BackCommand = new RelayCommand(Back);
+            DeleteCommand = new RelayCommand<ExportItem>(Delete);
+            DuplicateCommand = new RelayCommand<ExportItem>(Duplicate);
+        }
+
+        private void Duplicate(ExportItem obj)
+        {
+            Profile.ExportItems.Add(obj.Clone());
+        }
+
+        private void Delete(ExportItem obj)
+        {
+            if (MessageBox.Show("Do you realy want to delete this item ?", "Warning", MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                Profile.ExportItems.Remove(obj);
+            }
         }
 
         private void Back()

@@ -96,8 +96,8 @@
       <HintPath>..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.0.1140, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.2.5.0-ci1140\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.0.1163, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.5.0-ci1163\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -138,6 +138,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="WPFFolderBrowser, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFFolderBrowser.1.0.2\lib\WPFFolderBrowser.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdjustPanel\ContrastPanel.cs" />

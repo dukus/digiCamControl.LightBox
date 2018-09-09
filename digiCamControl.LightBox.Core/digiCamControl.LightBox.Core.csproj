@@ -135,6 +135,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="WPFFolderBrowser, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFFolderBrowser.1.0.2\lib\WPFFolderBrowser.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clasess\ExportItem.cs" />

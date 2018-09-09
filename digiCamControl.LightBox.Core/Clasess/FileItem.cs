@@ -1,6 +1,8 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using ImageMagick;
+using Newtonsoft.Json;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
@@ -14,7 +16,8 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string PreviewProsessedFile { get; set; }
         public int ImageNumber { get; set; }
         public bool ReloadRequired { get; set; }
-
+        public DateTime DateTime { get; set; }
+        
         public ValueItemCollection Variables { get; set; }
 
 
@@ -28,7 +31,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             }
         }
 
-
+        [JsonIgnore]
         public BitmapSource Thumb
         {
             get { return _thumb; }
@@ -43,12 +46,13 @@ namespace digiCamControl.LightBox.Core.Clasess
         public FileItem(string file)
         {
             TempFile = file;
-            //Thumb = Utils.LoadImage(file, 240);
+            DateTime=DateTime.Now;
             Variables = new ValueItemCollection();
         }
 
         public FileItem()
         {
+            DateTime = DateTime.Now;
             Variables = new ValueItemCollection();
         }
 

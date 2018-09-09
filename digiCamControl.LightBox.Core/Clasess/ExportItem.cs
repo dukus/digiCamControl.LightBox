@@ -1,9 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
+    [Serializable]
     public class ExportItem
     {
         private ContentControl _control;
@@ -37,6 +39,16 @@ namespace digiCamControl.LightBox.Core.Clasess
         public ExportItem()
         {
             Variables = new ValueItemCollection();
+        }
+
+        public ExportItem Clone()
+        {
+            var res = new ExportItem();
+            res.Icon = this.Icon;
+            res.Id = this.Id;
+            res.Variables.CopyFrom(this.Variables);
+            res.Name = this.Name;
+            return res;
         }
     }
 }

@@ -28,14 +28,14 @@
                          materialDesign:HintAssist.Hint="Height" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
             </StackPanel>
             <DockPanel  HorizontalAlignment="Stretch" Margin="4">
-                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" DockPanel.Dock="Right" HorizontalAlignment="Right" >
                     <materialDesign:PackIcon Kind="Pencil" Height="24" Width="24" />
                 </Button>
                 <TextBox Text="{Binding FileNameTemplate}" materialDesign:HintAssist.Hint="File Name Template"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <DockPanel  HorizontalAlignment="Stretch" Margin="4" >
-                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding BrowseFolderCommand}">
                     <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" />
                 </Button>
                 <TextBox Text="{Binding Folder}" materialDesign:HintAssist.Hint="Folder"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" HorizontalAlignment="Stretch"/>

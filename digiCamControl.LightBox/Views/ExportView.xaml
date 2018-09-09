@@ -85,8 +85,8 @@
                                 <DockPanel  HorizontalAlignment="Stretch" Margin="4">
                                     <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges" StaysOpen="False" HorizontalAlignment="Right" VerticalAlignment="Top"  PopupMode="Click" DockPanel.Dock="Right" >
                                         <StackPanel>
-                                            <Button Content="Delete"/>
-                                            <Button Content="Duplicated"/>
+                                            <Button Content="Delete" Command="{Binding ElementName=ExportViewControl, Path=DataContext.DeleteCommand}" CommandParameter="{Binding}"/>
+                                            <Button Content="Duplicated" Command="{Binding ElementName=ExportViewControl, Path=DataContext.DuplicateCommand}" CommandParameter="{Binding}"/>
                                             <!--<Button Content="Delete" Command="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.RemovePluginCommand}" CommandParameter="{Binding}"/>
                                             <Button Content="Settings" Command="{Binding ConfigurePluginCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type my:MainWindow}}}" CommandParameter="{Binding}"/>
                                             <Button Content="Execute"  Command="{Binding Source={x:Static Member=Core:ServiceProvider.Settings}, Path=DefaultSession.ApplyPluginCommand}" CommandParameter="{Binding}"/>-->

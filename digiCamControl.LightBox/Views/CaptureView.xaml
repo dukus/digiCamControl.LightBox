@@ -8,7 +8,7 @@
              xmlns:controls="clr-namespace:digiCamControl.LightBox.Controls"
              xmlns:dd="urn:gong-wpf-dragdrop"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.DataContext>
         <viewModels:CaptureViewModel/>
     </UserControl.DataContext>
@@ -22,6 +22,16 @@
             <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type controls:MoveThumb}">
                 <Rectangle Fill="Transparent"/>
             </ControlTemplate>
+            <Storyboard x:Key="Pulse" RepeatBehavior="Forever">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="LiveIndicator">
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1.15"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="LiveIndicator">
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1.15"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
 
             <!-- ResizeDecorator Template -->
             <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
@@ -48,6 +58,11 @@
             </ControlTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Pulse}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -94,6 +109,22 @@
         </materialDesign:Card>
 
         <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Name="_image" Margin="16"/>
+
+        <Border Grid.Row="0" Grid.Column="2" Margin="16" x:Name="LiveIndicator"
+                HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding IsLiveViewEnable, Converter={StaticResource BooleanToVisibilityConverter}}" RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+            <TextBlock Text="Live"  Foreground="Red" Opacity="0.75" FontSize="20"/>
+
+        </Border>
+
         <Viewbox Grid.Row="0" Grid.Column="2" Stretch="Fill" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=_image}" Height="{Binding ActualHeight, ElementName=_image}" Visibility="{Binding CropVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Canvas Width="1000" Height="1000">
                 <Path Fill="#80000000">
@@ -135,5 +166,16 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
+
+        <materialDesign:Card Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Stretch">
+            <Grid>
+                <StackPanel VerticalAlignment="Top">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding DeleteAllCommand}" ToolTip="Remove all images" >
+                        <materialDesign:PackIcon Kind="DeleteSweep" Height="24" Width="24" />
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </UserControl>

@@ -69,13 +69,13 @@
                     <StackPanel Grid.Row="0" Margin="4">
                         <DockPanel  HorizontalAlignment="Stretch" >
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding AddProfileCommand}" >
+                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding AddProfileCommand}" ToolTip="Add new profile">
                                     <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
                                 </Button>
-                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" >
+                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="Edit profile name">
                                     <materialDesign:PackIcon Kind="Pencil" Height="24" Width="24" />
                                 </Button>
-                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding DelProfileCommand}">
+                                <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding DelProfileCommand}" ToolTip=" Delete current profile">
                                     <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
                                 </Button>
 

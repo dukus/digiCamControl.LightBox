@@ -30,6 +30,7 @@ namespace digiCamControl.LightBox.ViewModels
         private ContentControl _panelControl;
         private FileItem _selectedItem;
         private bool _panelVisible;
+        private bool _isLiveViewEnable;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -151,6 +152,17 @@ namespace digiCamControl.LightBox.ViewModels
             }
         }
 
+        public bool IsLiveViewEnable
+        {
+            get { return _isLiveViewEnable; }
+            set
+            {
+                _isLiveViewEnable = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         public Rect CropRect => new Rect(CropX, CropY, CropWidth, CropHeight);
         public ICameraDevice CameraDevice => ServiceProvider.Instance.DeviceManager.SelectedCameraDevice;
 
@@ -160,6 +172,8 @@ namespace digiCamControl.LightBox.ViewModels
 
         public RelayCommand BackCommand { get; set; }
         public RelayCommand NextCommand { get; set; }
+
+        public RelayCommand DeleteAllCommand { get; set; }
 
 
         public CaptureViewModel()
@@ -175,6 +189,7 @@ namespace digiCamControl.LightBox.ViewModels
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
+            DeleteAllCommand=new RelayCommand(DeleteAll);
             if (!IsInDesignMode)
             {
                 if (CropX == 0)
@@ -189,6 +204,16 @@ namespace digiCamControl.LightBox.ViewModels
             ExecuteItem(PanelItems[1]);
         }
 
+        private void DeleteAll()
+        {
+            if (MessageBox.Show("Do you want to continue ?", "Warning", MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                Session.CleanUp();
+                ServiceProvider.Instance.OnMessage(Messages.StartLiveView);
+            }
+        }
+
         private void Next()
         {
             Session.Save();
@@ -198,7 +223,7 @@ namespace digiCamControl.LightBox.ViewModels
         private void Back()
         {
             if (Session.Files.Count > 0 &&
-                MessageBox.Show("You are sure do you want to continue ?\nAll captured images will be lost!!!",
+                MessageBox.Show("You are sure do you want to continue ?\nCurrent session captured images will be deleted!!!",
                     "Warning",
                     MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No,
                     MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
@@ -243,11 +268,7 @@ namespace digiCamControl.LightBox.ViewModels
                             item.Thumb.Freeze();
                         }
                     }
-                    Stopwatch time=new Stopwatch();
-                    time.Start();
                     BitmapSource = Utils.LoadImage(item.PreviewFile);
-                    time.Stop();
-                    Console.WriteLine(time.Elapsed);
                 }
             }
             catch (Exception e)
@@ -395,6 +416,7 @@ namespace digiCamControl.LightBox.ViewModels
 
                     _Livetimer.Start();
                     Log.Debug("LiveView: Liveview start done");
+                    IsLiveViewEnable = true;
                 }
                 catch (Exception exception)
                 {
@@ -447,6 +469,7 @@ namespace digiCamControl.LightBox.ViewModels
                             }
                         }
                     } while (retry && retryNum < 5);
+                    IsLiveViewEnable = false;
                 }
                 catch (Exception exception)
                 {
@@ -537,6 +560,7 @@ namespace digiCamControl.LightBox.ViewModels
                 (item.Panel?.DataContext as IInit)?.Init();
             }
             ServiceProvider.Instance.Message += Instance_Message;
+            ServiceProvider.Instance.DeviceManager.CameraSelected += DeviceManager_CameraSelected;
             Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
             StartLiveView();
             RaisePropertyChanged(() => CropRect);
@@ -545,6 +569,12 @@ namespace digiCamControl.LightBox.ViewModels
             RaisePropertyChanged(() => CropX);
             RaisePropertyChanged(() => CropY);
             RaisePropertyChanged(() => CropVisible);
+        }
+
+        private void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
+        {
+            if(newcameraDevice!=null && newcameraDevice.IsConnected)
+                StartLiveView();
         }
 
         public void LoadImageThumbs()
@@ -569,6 +599,7 @@ namespace digiCamControl.LightBox.ViewModels
         {
             ServiceProvider.Instance.Message -= Instance_Message;
             Session.Variables.ValueChangedEvent -= Variables_ValueChangedEvent;
+            ServiceProvider.Instance.DeviceManager.CameraSelected -= DeviceManager_CameraSelected;
             StopLiveView();
             foreach (var item in PanelItems)
             {

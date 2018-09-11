@@ -17,7 +17,7 @@ namespace digiCamControl.LightBox.Plugins
 
         public string Name => "Crop";
         public string Id => "{2F72798A-00B9-4F42-9227-1E1C49498663}";
-        public string Icon => "CropLandscape";
+        public string Icon => "Crop";
         public ContentControl Panel { get; }
 
         public bool Execute()

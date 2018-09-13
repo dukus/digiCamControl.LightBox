@@ -90,7 +90,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropX
         {
-            get { return Session.Variables.GetInt("CropX"); }
+            get { return Session.Variables.GetInt("CropX",400); }
             set
             {
                 Session.Variables["CropX"] = value;
@@ -101,7 +101,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropWidth
         {
-            get { return Session.Variables.GetInt("CropWidth"); }
+            get { return Session.Variables.GetInt("CropWidth",200); }
             set
             {
                 Session.Variables["CropWidth"] = value;
@@ -112,7 +112,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropY
         {
-            get { return Session.Variables.GetInt("CropY"); }
+            get { return Session.Variables.GetInt("CropY",400); }
             set
             {
                 Session.Variables["CropY"] = value;
@@ -123,7 +123,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropHeight
         {
-            get { return Session.Variables.GetInt("CropHeight"); }
+            get { return Session.Variables.GetInt("CropHeight",200); }
             set
             {
                 Session.Variables["CropHeight"] = value;
@@ -190,17 +190,6 @@ namespace digiCamControl.LightBox.ViewModels
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
             DeleteAllCommand=new RelayCommand(DeleteAll);
-            if (!IsInDesignMode)
-            {
-                if (CropX == 0)
-                    CropX = 400;
-                if (CropY == 0)
-                    CropY = 400;
-                if (CropWidth == 0)
-                    CropWidth = 200;
-                if (CropHeight == 0)
-                    CropHeight = 200;
-            }
             ExecuteItem(PanelItems[1]);
         }
 

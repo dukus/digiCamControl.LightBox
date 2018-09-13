@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:digiCamControl.LightBox.Plugins"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="300" Width="250">
+             d:DesignHeight="500" Width="250">
     <UserControl.DataContext>
         <local:CameraPanelViewModel/>
     </UserControl.DataContext>
@@ -76,6 +76,23 @@
                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
                 </Border>
             </StackPanel>
+
+            <DockPanel  HorizontalAlignment="Stretch" >
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding AddProfileCommand}" ToolTip="Add new profile"  Padding="4">
+                        <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
+                    </Button>
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" ToolTip="Edit profile"  Padding="4" >
+                        <materialDesign:PackIcon Kind="Pencil" Height="24" Width="24" />
+                    </Button>
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding DelProfileCommand}" ToolTip=" Delete current profile"  Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+
+                </StackPanel>
+                <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding Profile}" materialDesign:HintAssist.Hint="Camera preset"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch" DisplayMemberPath="Name"/>
+            </DockPanel>
+            
             <Label Content="Manual focus"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="&lt;&lt;&lt;" Margin="4" Command="{Binding FocusFFFCommand}"/>

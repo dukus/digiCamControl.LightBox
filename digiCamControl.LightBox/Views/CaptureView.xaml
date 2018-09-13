@@ -97,9 +97,6 @@
                     <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding BackCommand}">
                         <materialDesign:PackIcon Kind="ArrowLeftBold" Height="24" Width="24" />
                     </Button>
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding NextCommand}">
-                        <materialDesign:PackIcon Kind="brush" Height="24" Width="24" />
-                    </Button>
                 </StackPanel>
             </Grid>
         </materialDesign:Card>
@@ -175,6 +172,9 @@
                     </Button>
 
                 </StackPanel>
+                <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding NextCommand}">
+                    <materialDesign:PackIcon Kind="ArrowRightBold" Height="24" Width="24" />
+                </Button>
             </Grid>
         </materialDesign:Card>
     </Grid>

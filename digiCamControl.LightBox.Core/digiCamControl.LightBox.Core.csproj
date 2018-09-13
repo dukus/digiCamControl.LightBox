@@ -141,6 +141,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clasess\CameraProfile.cs" />
     <Compile Include="Clasess\ExportItem.cs" />
     <Compile Include="Clasess\FileItem.cs" />
     <Compile Include="Clasess\MessageArgs.cs" />

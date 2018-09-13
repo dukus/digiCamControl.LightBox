@@ -25,10 +25,14 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string SessionName { get; set; }
         public int SessionCounter { get; set; }
         public string Id { get; set; }
+        public string CameraProfileId { get; set; }
+
+
         [JsonIgnore]
         public AsyncObservableCollection<FileItem> Files { get; set; }
         public ValueItemCollection Variables { get; set; }
         public AsyncObservableCollection<ExportItem> ExportItems { get; set; }
+
 
         public Profile()
         {

@@ -94,7 +94,7 @@ namespace digiCamControl.LightBox.Plugins
 
         public bool LeaveFileAfterTransfer
         {
-            get { return Session.Variables.GetBool("LeaveFileAfterTransfer"); }
+            get { return Session.Variables.GetBool("LeaveFileAfterTransfer", true); }
             set
             {
                 Session.Variables["LeaveFileAfterTransfer"] = value;

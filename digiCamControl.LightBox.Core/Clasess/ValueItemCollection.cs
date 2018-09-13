@@ -21,6 +21,14 @@ namespace digiCamControl.LightBox.Core.Clasess
             Items = new List<ValueItem>();
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="System.Object"/> at the specified variable.
+        /// </summary>
+        /// <value>
+        /// The <see cref="System.Object"/>.
+        /// </value>
+        /// <param name="index">The variable name</param>
+        /// <returns></returns>
         public object this[string index]
         {
             get { return Get(index)?.Value; }
@@ -42,36 +50,67 @@ namespace digiCamControl.LightBox.Core.Clasess
 
         public ValueItem Get(string name)
         {
+            return Items.FirstOrDefault(item => item.Name == name);
+        }
+
+
+        /// <summary>
+        /// Gets the variabe as string.
+        /// </summary>
+        /// <param name="name">The variable name.</param>
+        /// <param name="defaultVal">The default value if the variable not found</param>
+        /// <returns></returns>
+        public string GetString(string name, string defaultVal = "")
+        {
             foreach (var item in Items)
             {
                 if (item.Name == name)
-                    return item;
+                    return item.Value;
             }
-            return null;
+            return defaultVal;
         }
 
-        public int GetInt(string name)
+        /// <summary>
+        /// Gets the variabe as int.
+        /// </summary>
+        /// <param name="name">The variable name.</param>
+        /// <param name="defaultVal">The default value if the variable not found</param>
+        /// <returns></returns>
+        public int GetInt(string name, int defaultVal = 0)
         {
             var val = Get(name);
             if (val == null)
-                return 0;
+                return defaultVal;
             return Convert.ToInt32(val.Value, CultureInfo.InvariantCulture);
         }
 
-        public double GetDouble(string name)
+        /// <summary>
+        /// Gets the variabe as double.
+        /// </summary>
+        /// <param name="name">The variable name.</param>
+        /// <param name="defaultVal">The default value if the variable not found</param>
+        /// <returns></returns>
+
+        public double GetDouble(string name, double defaultVal = 0)
         {
             var val = Get(name);
             if (val == null)
-                return 0;
+                return defaultVal;
             return Convert.ToDouble(val.Value, CultureInfo.InvariantCulture);
         }
 
-        public bool GetBool(string name)
+        /// <summary>
+        /// Gets the variabe as bool.
+        /// </summary>
+        /// <param name="name">The variable name.</param>
+        /// <param name="defaultVal">The default value if the variable not found</param>
+        /// <returns></returns>
+        public bool GetBool(string name, bool defaultVal = false)
         {
             var val = Get(name);
             if (val == null)
-                return false;
-            return val.Value=="True";
+                return defaultVal;
+            return val.Value == "True";
         }
 
         public string TransformToString(object o)
@@ -93,6 +132,10 @@ namespace digiCamControl.LightBox.Core.Clasess
             ValueChangedEvent?.Invoke(this, item);
         }
 
+        /// <summary>
+        /// Copies all variables from a another variable connections
+        /// </summary>
+        /// <param name="values">The values.</param>
         public void CopyFrom(ValueItemCollection values)
         {
             foreach (var item in values.Items)

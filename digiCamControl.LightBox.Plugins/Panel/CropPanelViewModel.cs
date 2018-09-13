@@ -110,6 +110,10 @@ namespace digiCamControl.LightBox.Plugins
         public void Init()
         {
             Session.Variables.ValueChangedEvent += Variables_ValueChangedEvent;
+            foreach (var names in Utils.GetPropertieNames(this.GetType()))
+            {
+                RaisePropertyChanged(names);
+            }
         }
 
         public void UnInit()

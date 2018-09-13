@@ -31,6 +31,9 @@ namespace digiCamControl.LightBox.Core.Clasess
         public List<IAdjustPlugin> AdjustPlugins { get; set; }
         public List<IExportPlugin> ExportPlugins { get; set; }
 
+        public List<CameraProfile> CameraProfiles { get; set; }
+
+
         public void Configure()
         {
             var LogFile = Path.Combine(Settings.Instance.DataFolder, "Logs", "app.log");
@@ -40,6 +43,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             PreAdjustPlugins = new List<IAdjustPlugin>();
             AdjustPlugins = new List<IAdjustPlugin>();
             ExportPlugins = new List<IExportPlugin>();
+            CameraProfiles = new List<CameraProfile>();
         }
 
         public static void Configure(string logFile)
@@ -54,6 +58,7 @@ namespace digiCamControl.LightBox.Core.Clasess
             {
                 Log.Debug("Application version : " + Assembly.GetEntryAssembly().GetName().Version);
                 Directory.CreateDirectory(Settings.Instance.ProfileFolder);
+                Directory.CreateDirectory(Settings.Instance.CameraProfileFolder);
             }
             catch { }
         }

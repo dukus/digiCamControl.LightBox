@@ -9,6 +9,7 @@ using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using MaterialDesignThemes.Wpf;
 
 
@@ -78,6 +79,11 @@ namespace digiCamControl.LightBox.ViewModels
         public SnackbarMessageQueue MessageQueue { get; set; }
 
 
+        public RelayCommand StartCommand { get; set; }
+        public RelayCommand CaptureCommand { get; set; }
+        public RelayCommand EditCommand { get; set; }
+        public RelayCommand PublishCommand { get; set; }
+        public RelayCommand ExitCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the current selected Camera .
@@ -110,6 +116,16 @@ namespace digiCamControl.LightBox.ViewModels
                     _contentControls.Add(ViewEnum.Export, new ExportView());
                     ChangeLayout(ViewEnum.Start);
                 }
+                StartCommand = new RelayCommand(
+                    () => ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Start));
+                CaptureCommand = new RelayCommand(
+                    () => ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Capture));
+                EditCommand = new RelayCommand(
+                    () => ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Adjust));
+                PublishCommand = new RelayCommand(
+                    () => ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, "", ViewEnum.Export));
+                ExitCommand = new RelayCommand(() => App.Current.Shutdown());
+
             }
             catch (Exception e)
             {

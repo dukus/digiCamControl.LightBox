@@ -11,7 +11,7 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
-        Title="MainWindow" Height="740" Width="1360">
+        Title="MainWindow" Height="740" Width="1360" WindowState="Maximized">
     <Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </Window.DataContext>
@@ -51,6 +51,33 @@
                                       HorizontalAlignment="Right" Margin="16"
                                       IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                         <StackPanel>
+                            <MenuItem Header="Start" Command="{Binding StartCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="ArrowExpandRight" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Capture" Command="{Binding CaptureCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Camera" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Edit" Command="{Binding EditCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Brush" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <MenuItem Header="Publish" Command="{Binding PublishCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Upload" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator/>
+                            <MenuItem Header="Exit" Command="{Binding ExitCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="ExitToApp" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </StackPanel>
 
                     </DockPanel>
@@ -66,6 +93,7 @@
                         <DockPanel>
                             <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
                                           x:Name="MenuToggleButton"/>
+
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Margin="30,5" Text="{Binding Title}"/>
                             <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" >
                                 <Grid>
@@ -83,7 +111,7 @@
                     </StatusBar>-->
 
                     <materialDesign:Snackbar MessageQueue="{Binding MessageQueue}" Grid.Row="1" Margin="80,16,16,16" HorizontalAlignment="Left" >
-                        
+
                     </materialDesign:Snackbar>
                 </Grid>
             </materialDesign:DrawerHost>

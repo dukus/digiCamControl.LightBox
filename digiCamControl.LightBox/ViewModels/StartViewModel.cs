@@ -2,8 +2,10 @@
 using System.Activities.Statements;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using CameraControl.Devices;
+using CameraControl.Devices.Classes;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Views;
@@ -15,6 +17,7 @@ namespace digiCamControl.LightBox.ViewModels
 {
     public class StartViewModel : ViewModelBase, IInit
     {
+        private CameraProfile _cameraProfile;
 
 
         public Profile Profile
@@ -27,7 +30,19 @@ namespace digiCamControl.LightBox.ViewModels
             }
         }
 
+        public CameraProfile CameraProfile
+        {
+            get { return _cameraProfile; }
+            set
+            {
+                _cameraProfile = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         public ObservableCollection<Profile> Profiles { get; set; }
+        public ObservableCollection<CameraProfile> CameraProfiles { get; set; }
 
 
         public RelayCommand NextCommand { get; set; }
@@ -38,6 +53,7 @@ namespace digiCamControl.LightBox.ViewModels
         {
             NextCommand = new RelayCommand(Next);
             Profiles = new ObservableCollection<Profile>();
+            CameraProfiles = new AsyncObservableCollection<CameraProfile>();
             AddProfileCommand = new RelayCommand(AddProfile);
             DelProfileCommand = new RelayCommand(DelProfile);
         }
@@ -91,8 +107,19 @@ namespace digiCamControl.LightBox.ViewModels
         {
             try
             {
+                // load camera profiles
+                CameraProfiles.Clear();
+                var files = Directory.GetFiles(Settings.Instance.CameraProfileFolder, "*.json");
+                foreach (var file in files)
+                {
+                    var p = CameraProfile.Load(file);
+                    if (p != null)
+                        CameraProfiles.Add(p);
+                }
+
+                // camera profiles
                 Profiles.Clear();
-                var files = Directory.GetFiles(Settings.Instance.ProfileFolder, "*.json");
+                files = Directory.GetFiles(Settings.Instance.ProfileFolder, "*.json");
                 foreach (var file in files)
                 {
                     var p = Profile.Load(file);
@@ -106,6 +133,10 @@ namespace digiCamControl.LightBox.ViewModels
                     Profiles.Add(newP);
                 }
                 Profile = Profiles[0];
+                if (!string.IsNullOrWhiteSpace(Profile?.CameraProfileId))
+                {
+                    CameraProfile = CameraProfiles.FirstOrDefault(x => x.Id == Profile.CameraProfileId);
+                }
             }
             catch (Exception e)
             {

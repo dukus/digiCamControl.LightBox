@@ -17,6 +17,9 @@ namespace digiCamControl.LightBox.ViewModels
 {
     public class StartViewModel : ViewModelBase, IInit
     {
+        private CameraProfile _noneProfile = new CameraProfile() { Id = "", Name = "(None)" };
+
+
         private CameraProfile _cameraProfile;
 
 
@@ -32,10 +35,20 @@ namespace digiCamControl.LightBox.ViewModels
 
         public CameraProfile CameraProfile
         {
-            get { return _cameraProfile; }
+            get
+            {
+                foreach (var cameraProfile in CameraProfiles)
+                {
+                    if (Profile.CameraProfileId == cameraProfile.Id)
+                        _cameraProfile = cameraProfile;
+                }
+                return _cameraProfile;
+            }
             set
             {
                 _cameraProfile = value;
+                if (_cameraProfile != null)
+                    Profile.CameraProfileId = _cameraProfile.Id;
                 RaisePropertyChanged();
             }
         }
@@ -109,6 +122,8 @@ namespace digiCamControl.LightBox.ViewModels
             {
                 // load camera profiles
                 CameraProfiles.Clear();
+                CameraProfiles.Add(_noneProfile);
+
                 var files = Directory.GetFiles(Settings.Instance.CameraProfileFolder, "*.json");
                 foreach (var file in files)
                 {
@@ -116,7 +131,7 @@ namespace digiCamControl.LightBox.ViewModels
                     if (p != null)
                         CameraProfiles.Add(p);
                 }
-
+                RaisePropertyChanged(() => CameraProfile);
                 // camera profiles
                 Profiles.Clear();
                 files = Directory.GetFiles(Settings.Instance.ProfileFolder, "*.json");

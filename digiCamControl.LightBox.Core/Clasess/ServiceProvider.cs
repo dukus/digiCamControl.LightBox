@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using digiCamControl.LightBox.Core.Interfaces;
@@ -32,6 +33,8 @@ namespace digiCamControl.LightBox.Core.Clasess
         public List<IExportPlugin> ExportPlugins { get; set; }
 
         public List<CameraProfile> CameraProfiles { get; set; }
+
+        public Window MainWindow { get; set; }
 
 
         public void Configure()

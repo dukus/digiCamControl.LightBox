@@ -144,12 +144,12 @@
                         <materialDesign:PackIcon Kind="ReplyAll" Height="24" Width="24" />
                     </Button>
                     <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding SetDefaultCommand}" ToolTip="Save as default" IsEnabled="{Binding EditIsEnabled}">
-                        <materialDesign:PackIcon Kind="ContentSaveSettings" Height="24" Width="24" />
+                        <materialDesign:PackIcon Kind="SetAll" Height="24" Width="24" />
                     </Button>
                 </StackPanel>
 
                 <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding NextCommand}">
-                    <materialDesign:PackIcon Kind="ArrowRightBold" Height="24" Width="24" />
+                    <materialDesign:PackIcon Kind="Floppy" Height="24" Width="24" />
                 </Button>
             </Grid>
         </materialDesign:Card>

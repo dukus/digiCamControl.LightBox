@@ -13,5 +13,8 @@
         public const string CreatePreview = "CreatePreview";
         public const string RefreshThumb = "RefreshThumb";
         public const string ItemChanged = "ItemChanged";
+        public const string PauseLiveView = "PauseLiveView";
+        public const string ResumeLiveView = "ResumeLiveView";
+
     }
 }

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace digiCamControl.LightBox.Core.Clasess
 {
@@ -29,6 +28,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         /// </value>
         /// <param name="index">The variable name</param>
         /// <returns></returns>
+        [IndexerName ("Item")]
         public object this[string index]
         {
             get { return Get(index)?.Value; }
@@ -115,6 +115,8 @@ namespace digiCamControl.LightBox.Core.Clasess
 
         public string TransformToString(object o)
         {
+            if (o == null)
+                return "";
             if (o is int)
                 return ((int) o).ToString(CultureInfo.InvariantCulture);
             if (o is double)

@@ -157,6 +157,10 @@
     <Compile Include="Adjust\Contrast.cs" />
     <Compile Include="Adjust\Crop.cs" />
     <Compile Include="Adjust\RemoveBackground.cs" />
+    <Compile Include="Panel\CameraProfilerView.xaml.cs">
+      <DependentUpon>CameraProfilerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Panel\CameraProfilerViewModel.cs" />
     <Compile Include="ExportPlugins\BaseExportPluginViewModel.cs" />
     <Compile Include="ExportPlugins\CopyPlugin.cs" />
     <Compile Include="ExportPlugins\CopyPluginView.xaml.cs">
@@ -195,6 +199,10 @@
     <Page Include="AdjustPanel\RemoveBackgroundPanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panel\CameraProfilerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ExportPlugins\CopyPluginView.xaml">
       <SubType>Designer</SubType>

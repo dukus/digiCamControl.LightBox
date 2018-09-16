@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using CameraControl.Devices;
+using CameraControl.Devices.Classes;
 using Newtonsoft.Json;
 
 namespace digiCamControl.LightBox.Core.Clasess
@@ -20,7 +18,65 @@ namespace digiCamControl.LightBox.Core.Clasess
         public CameraProfile()
         {
             Id = Guid.NewGuid().ToString();
+            Values = new ValueItemCollection();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CameraProfile"/> class.
+        /// </summary>
+        /// <param name="cameraDevice">The camera device for  default saved values</param>
+        public CameraProfile(ICameraDevice cameraDevice)
+        {
+            Id = Guid.NewGuid().ToString();
+            Values = new ValueItemCollection();
+            if (cameraDevice != null)
+            {
+                Values["Mode"] = cameraDevice.Mode.Value;
+                Values["ShutterSpeed"] = cameraDevice.ShutterSpeed.Value;
+                Values["FNumber"] = cameraDevice.FNumber.Value;
+                Values["IsoNumber"] = cameraDevice.IsoNumber.Value;
+                Values["WhiteBalance"] = cameraDevice.WhiteBalance.Value;
+                Values["CompressionSetting"] = cameraDevice.CompressionSetting.Value;
+                Values["FocusMode"] = cameraDevice.FocusMode.Value;
+                Values["ExposureMeteringMode"] = cameraDevice.ExposureMeteringMode.Value;
+            }
+        }
+
+        public void Set(ICameraDevice cameraDevice)
+        {
+            SetValue(cameraDevice.Mode,"Mode");
+            SetValue(cameraDevice.ShutterSpeed, "ShutterSpeed");
+            SetValue(cameraDevice.FNumber, "FNumber");
+            SetValue(cameraDevice.IsoNumber, "IsoNumber");
+            SetValue(cameraDevice.WhiteBalance, "WhiteBalance");
+            SetValue(cameraDevice.CompressionSetting, "CompressionSetting");
+            SetValue(cameraDevice.FocusMode, "FocusMode");
+            SetValue(cameraDevice.ExposureMeteringMode, "ExposureMeteringMode");
+        }
+
+        private void SetValue(PropertyValue<long> prop,string name)
+        {
+            if (!string.IsNullOrWhiteSpace(Values.GetString(name)))
+            {
+                try
+                {
+                    if (prop.Values.Contains(Values.GetString(name)))
+                    {
+                        prop.Value = Values.GetString(name);
+                        Thread.Sleep(250);
+                    }
+                    else
+                    {
+                        Log.Debug("Wrong value " + Values.GetString(name) + " for " + name);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Debug("Unable to set property " + name);
+                }
+            }
+        }
+
 
         public static CameraProfile Load(string file)
         {
@@ -46,7 +102,24 @@ namespace digiCamControl.LightBox.Core.Clasess
             }
             catch (Exception e)
             {
-                Log.Error("Error to save session", e);
+                Log.Error("Error to save profile", e);
+            }
+        }
+
+        /// <summary>
+        /// Deletes profile information from disk.
+        /// </summary>
+        public void Delete()
+        {
+            try
+            {
+                
+                string file = Path.Combine(Settings.Instance.CameraProfileFolder, Id + ".json");
+                Utils.DeleteFile(file);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error to delete profile", e);
             }
         }
 

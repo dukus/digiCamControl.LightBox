@@ -31,6 +31,7 @@ namespace digiCamControl.LightBox.ViewModels
         private FileItem _selectedItem;
         private bool _panelVisible;
         private bool _isLiveViewEnable;
+        private bool _isLiveViewPaused;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -211,6 +212,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void Back()
         {
+            Session.Save();
             if (Session.Files.Count > 0 &&
                 MessageBox.Show("You are sure do you want to continue ?\nCurrent session captured images will be deleted!!!",
                     "Warning",
@@ -288,6 +290,16 @@ namespace digiCamControl.LightBox.ViewModels
                     case Messages.StartLiveView:
                     {
                         StartLiveViewThread();
+                    }
+                        break;
+                    case Messages.PauseLiveView:
+                    {
+                        _isLiveViewPaused = true;
+                    }
+                        break;
+                    case Messages.ResumeLiveView:
+                    {
+                        _isLiveViewPaused = false;
                     }
                         break;
                 }
@@ -402,7 +414,7 @@ namespace digiCamControl.LightBox.ViewModels
 
                         }
                     } while (retry && retryNum < 35);
-
+                    _isLiveViewPaused = false;
                     _Livetimer.Start();
                     Log.Debug("LiveView: Liveview start done");
                     IsLiveViewEnable = true;
@@ -472,6 +484,9 @@ namespace digiCamControl.LightBox.ViewModels
         {
             try
             {
+                if (_isLiveViewPaused)
+                    return;
+
                 _liveViewData = CameraDevice.GetLiveViewImage();
                 if (_liveViewData != null && _liveViewData.ImageData != null)
                 {
@@ -491,10 +506,7 @@ namespace digiCamControl.LightBox.ViewModels
                         bi.EndInit();
                         //bi.Freeze();
                         var bitmap = BitmapFactory.ConvertToPbgra32Format(bi);
-                        //if (Settings.Instance.OverlayShow)
-                        //    DrawOverlay(bitmap);
-                        //if (Settings.Instance.ShowInnerFrame)
-                        //    DrawInnerFrame(bitmap);
+
                         bitmap.Freeze();
                         BitmapSource = bitmap;
                     }
@@ -504,39 +516,6 @@ namespace digiCamControl.LightBox.ViewModels
             {
                 Log.Debug("Live view error ", ex);
             }
-        }
-
-        private void DrawInnerFrame(WriteableBitmap writeableBitmap)
-        {
-            //Color color = Colors.White;
-            //color.A = 50;
-
-            //int x1 = (int)(writeableBitmap.PixelWidth * ((Settings.Instance.InnerFrameWidth / 2.0) / 100));
-            //int x2 = (int)(writeableBitmap.PixelWidth * ((100 - (Settings.Instance.InnerFrameWidth / 2.0)) / 100));
-            //int y2 = (int)(writeableBitmap.PixelHeight * ((100 - (Settings.Instance.InnerFrameHeight / 2.0)) / 100));
-            //int y1 = (int)(writeableBitmap.PixelHeight * ((Settings.Instance.InnerFrameHeight / 2.0) / 100));
-            //Color frameColor = (Color)ColorConverter.ConvertFromString(Settings.Instance.InnerFrameColor);
-            //writeableBitmap.DrawRectangle(x1, y1, x2, y2, frameColor);
-            //writeableBitmap.DrawRectangle(x1 - 1, y1 - 1, x2 + 1, y2 + 1, frameColor);
-            //writeableBitmap.DrawRectangle(x1 - 2, y1 - 2, x2 + 2, y2 + 2, frameColor);
-            //writeableBitmap.DrawRectangle(x1 - 3, y1 - 3, x2 + 3, y2 + 3, frameColor);
-            //writeableBitmap.DrawRectangle(x1 - 4, y1 - 4, x2 + 4, y2 + 4, frameColor);
-        }
-
-        private void DrawOverlay(WriteableBitmap writeableBitmap)
-        {
-            //Color color = Colors.White;
-            //color.A = 50;
-
-            //int x1 = (int)(writeableBitmap.PixelWidth * ((Settings.Instance.OverlayWidth / 2.0) / 100));
-            //int x2 = (int)(writeableBitmap.PixelWidth * ((100 - (Settings.Instance.OverlayWidth / 2.0)) / 100));
-            //int y2 = (int)(writeableBitmap.PixelHeight * ((100 - (Settings.Instance.Overlayheight / 2.0)) / 100));
-            //int y1 = (int)(writeableBitmap.PixelHeight * ((Settings.Instance.Overlayheight / 2.0) / 100));
-            //Color overlayColor = (Color)ColorConverter.ConvertFromString(Settings.Instance.OverlayColor);
-            //overlayColor.A = (byte)(255 * (Settings.Instance.OverlayTransparency / 100.0));
-            //var bm = writeableBitmap.Crop(x1, y1, x2 - x1, y2 - y1);
-            //writeableBitmap.FillRectangle(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, WriteableBitmapExtensions.ConvertColor(overlayColor), true);
-            //writeableBitmap.Blit(new Rect(x1, y1, x2 - x1, y2 - y1), bm, new Rect(0, 0, bm.PixelWidth, bm.PixelHeight));
         }
 
         public void Init()

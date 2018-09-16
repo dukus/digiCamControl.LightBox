@@ -28,7 +28,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string CameraProfileId { get; set; }
 
 
-        [JsonIgnore]
+        
         public AsyncObservableCollection<FileItem> Files { get; set; }
         public ValueItemCollection Variables { get; set; }
         public AsyncObservableCollection<ExportItem> ExportItems { get; set; }

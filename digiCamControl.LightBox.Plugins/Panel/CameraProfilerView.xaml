@@ -1,0 +1,96 @@
+﻿<Window x:Class="digiCamControl.LightBox.Plugins.Panel.CameraProfilerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:panel="clr-namespace:digiCamControl.LightBox.Plugins.Panel"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        
+        mc:Ignorable="d"
+        Title="Camera Profile" Height="500" Width="300" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <panel:CameraProfilerViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.togglebutton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.textbox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.datagrid.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.datepicker.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.menu.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="215*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox Text="{Binding CameraProfile.Name}"  materialDesign:HintAssist.Hint="Name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0"/>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" >
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="Mode" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.Mode.Values}" Text="{Binding CameraProfile.Values[Mode], Mode=TwoWay}" IsEditable="True" materialDesign:HintAssist.Hint="Mode"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="ShutterSpeed" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.ShutterSpeed.Values}" Text="{Binding CameraProfile.Values[ShutterSpeed]}" IsEditable="True" materialDesign:HintAssist.Hint="Shutter Speed"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="FNumber" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.FNumber.Values}" Text="{Binding CameraProfile.Values[FNumber]}" IsEditable="True" materialDesign:HintAssist.Hint="Apperture"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="IsoNumber" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.IsoNumber.Values}" Text="{Binding CameraProfile.Values[IsoNumber]}" IsEditable="True" materialDesign:HintAssist.Hint="Iso"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="WhiteBalance" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.WhiteBalance.Values}" Text="{Binding CameraProfile.Values[WhiteBalance]}" IsEditable="True" materialDesign:HintAssist.Hint="White Balance"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="CompressionSetting" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.CompressionSetting.Values}" Text="{Binding CameraProfile.Values[CompressionSetting]}" IsEditable="True" materialDesign:HintAssist.Hint="Quality"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="FocusMode" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.FocusMode.Values}" Text="{Binding CameraProfile.Values[FocusMode]}" IsEditable="True" materialDesign:HintAssist.Hint="Focus Mode"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+                <DockPanel  HorizontalAlignment="Stretch" >
+                    <Button Margin="4" Style="{StaticResource MaterialDesignFlatButton }" Command="{Binding ClearCommand}" CommandParameter="ExposureMeteringMode" ToolTip="Clear value" DockPanel.Dock="Right" Padding="4">
+                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                    </Button>
+                    <ComboBox ItemsSource="{Binding CameraDevice.ExposureMeteringMode.Values}" Text="{Binding CameraProfile.Values[ExposureMeteringMode]}" IsEditable="True" materialDesign:HintAssist.Hint="Exposure Metering"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch"/>
+                </DockPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+        <Button Grid.Row="2" Content="Save" HorizontalAlignment="Left" Margin="4" Click="Button_Click"/>
+        <Button Grid.Row="2" Content="Cancel" HorizontalAlignment="Right" Margin="4" Click="Button_Click_1"/>
+    </Grid>
+</Window>

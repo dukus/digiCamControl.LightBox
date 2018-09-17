@@ -183,6 +183,11 @@
     </Compile>
     <Compile Include="Panel\CropPanelViewModel.cs" />
     <Compile Include="LiveViewPanel.cs" />
+    <Compile Include="Panel\LiveViewOverlay.cs" />
+    <Compile Include="Panel\LiveViewOverlayView.xaml.cs">
+      <DependentUpon>LiveViewOverlayView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Panel\LiveViewOverlayViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +222,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Panel\CropPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Panel\LiveViewOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

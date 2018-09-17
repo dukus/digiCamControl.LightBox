@@ -106,6 +106,8 @@
         </materialDesign:Card>
 
         <Image Grid.Row="0" Grid.Column="2" Source="{Binding BitmapSource}" Name="_image" Margin="16"/>
+        <Image Grid.Row="0" Grid.Column="2" Source="{Binding OverlayFileName}" Width="{Binding ElementName=_image,Path=ActualWidth}" Height="{Binding ElementName=_image,Path=ActualHeight}" Margin="16"
+               Opacity="{Binding LiveViewOverlayTransparency}"/>
 
         <Border Grid.Row="0" Grid.Column="2" Margin="16" x:Name="LiveIndicator"
                 HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding IsLiveViewEnable, Converter={StaticResource BooleanToVisibilityConverter}}" RenderTransformOrigin="0.5,0.5">

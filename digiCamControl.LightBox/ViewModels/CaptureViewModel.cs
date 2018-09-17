@@ -14,6 +14,7 @@ using Canon.Eos.Framework;
 using digiCamControl.LightBox.Core.Clasess;
 using digiCamControl.LightBox.Core.Interfaces;
 using digiCamControl.LightBox.Plugins;
+using digiCamControl.LightBox.Plugins.Panel;
 using digiCamControl.LightBox.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -32,6 +33,7 @@ namespace digiCamControl.LightBox.ViewModels
         private bool _panelVisible;
         private bool _isLiveViewEnable;
         private bool _isLiveViewPaused;
+        private string _overlayFileName;
 
         public List<IPanelItem> PanelItems { get; set; }
 
@@ -88,6 +90,18 @@ namespace digiCamControl.LightBox.ViewModels
                 RaisePropertyChanged(() => BitmapSource);
             }
         }
+
+        public double LiveViewOverlayTransparency
+        {
+            get { return Session.Variables.GetDouble("LiveViewOverlayTransparency", 1); }
+            set
+            {
+                Session.Variables["LiveViewOverlayTransparency"] = value;
+                RaisePropertyChanged(() => LiveViewOverlayTransparency);
+            }
+        }
+
+        public string OverlayFileName => Session.Variables.GetString("OverlayFileName");
 
         public int CropX
         {
@@ -187,6 +201,8 @@ namespace digiCamControl.LightBox.ViewModels
             PanelItems.Add(new CapturePanel());
             PanelItems.Add(new CropPanel());
             PanelItems.Add(new CameraPanel());
+            PanelItems.Add(new LiveViewOverlay());
+
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);

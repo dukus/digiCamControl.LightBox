@@ -11,7 +11,7 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
-        Title="MainWindow" Height="740" Width="1360" WindowState="Maximized">
+        Title="MainWindow" Height="740" Width="1360" WindowState="Maximized" Closing="Window_Closing">
     <Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </Window.DataContext>

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using digiCamControl.LightBox.Core.Clasess;
+using digiCamControl.LightBox.Views;
 
 namespace digiCamControl.LightBox
 {
@@ -23,6 +25,11 @@ namespace digiCamControl.LightBox
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ServiceProvider.Instance.OnMessage(Messages.StopLiveView);
         }
     }
 }

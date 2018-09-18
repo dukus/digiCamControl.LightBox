@@ -66,6 +66,54 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
             }
         }
 
+        public int BlackPoint
+        {
+            get { return FileItem.Variables.GetInt("BlackPoint"); }
+            set
+            {
+                FileItem.Variables["BlackPoint"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public int WhitePoint
+        {
+            get { return FileItem.Variables.GetInt("WhitePoint", 100); }
+            set
+            {
+                FileItem.Variables["WhitePoint"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public int MidPoint
+        {
+            get { return FileItem.Variables.GetInt("MidPoint"); }
+            set
+            {
+                FileItem.Variables["MidPoint"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public bool AutoLevel
+        {
+            get { return FileItem.Variables.GetBool("AutoLevel"); }
+            set
+            {
+                FileItem.Variables["AutoLevel"] = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(()=>NotAutoLevel);
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+        public bool NotAutoLevel => !AutoLevel;
+
+
         public RelayCommand ResetCommand { get; set; }
 
         public ContrastPanelViewModel()
@@ -82,6 +130,10 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
             Hue = 0;
             Contrast = 0;
             Normalize = false;
+            AutoLevel = false;
+            BlackPoint = 0;
+            WhitePoint = 100;
+            MidPoint = 0;
             ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
         }
 

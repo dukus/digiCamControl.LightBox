@@ -206,13 +206,13 @@ namespace digiCamControl.LightBox.ViewModels
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
-            DeleteAllCommand=new RelayCommand(DeleteAll);
+            DeleteAllCommand = new RelayCommand(DeleteAll);
             ExecuteItem(PanelItems[1]);
         }
 
         private void DeleteAll()
         {
-            if (MessageBox.Show("Do you want to continue ?", "Warning", MessageBoxButton.YesNo,
+            if (MessageBox.Show("Do you want to delete all images from current session ?", "Warning", MessageBoxButton.YesNo,
                     MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 Session.CleanUp();
@@ -236,6 +236,7 @@ namespace digiCamControl.LightBox.ViewModels
                     MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
             {
                 Session.CleanUp();
+                Session.Save();
                 ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Start);
             }
             if (Session.Files.Count == 0)

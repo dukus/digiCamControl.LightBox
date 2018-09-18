@@ -94,7 +94,7 @@
 
                 </StackPanel>
                 <StackPanel VerticalAlignment="Bottom">
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding BackCommand}">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding BackCommand}" ToolTip="Back to tha start screen">
                         <materialDesign:PackIcon Kind="ArrowLeftBold" Height="24" Width="24" />
                     </Button>
                 </StackPanel>
@@ -174,7 +174,7 @@
                     </Button>
 
                 </StackPanel>
-                <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding NextCommand}">
+                <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="4" Command="{Binding NextCommand}" ToolTip="Edit,Publishh captured photos">
                     <materialDesign:PackIcon Kind="ArrowRightBold" Height="24" Width="24" />
                 </Button>
             </Grid>

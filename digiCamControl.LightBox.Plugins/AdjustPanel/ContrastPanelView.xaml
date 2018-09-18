@@ -35,7 +35,15 @@
             <Rectangle Margin="4,0" Height="5" Fill="{StaticResource HueBrush}"/>
             <TextBlock Text="Saturation"  Margin="4"/>
             <Slider  Margin="4" Value="{Binding Saturation}"  Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft"/>
- 
+            <CheckBox IsChecked="{Binding AutoLevel}" Content="Autolevel"/>
+            <TextBlock Text="Black point"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding BlackPoint}"  Minimum="0" Maximum="100" AutoToolTipPlacement="TopLeft" IsEnabled="{Binding NotAutoLevel}"/>
+            <TextBlock Text="Mid point"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding MidPoint}"  Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft" IsEnabled="{Binding NotAutoLevel}"/>
+            <TextBlock Text="White point"  Margin="4"/>
+            <Slider  Margin="4" Value="{Binding WhitePoint}"  Minimum="0" Maximum="100" AutoToolTipPlacement="TopLeft" IsEnabled="{Binding NotAutoLevel}"/>
+
+
         </StackPanel>
         <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="16" Command="{Binding ResetCommand}" ToolTip="Reset values">
             <materialDesign:PackIcon Kind="Restart" Height="24" Width="24" />

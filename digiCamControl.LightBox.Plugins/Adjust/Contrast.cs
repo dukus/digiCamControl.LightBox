@@ -9,52 +9,23 @@ namespace digiCamControl.LightBox.Plugins.Adjust
         public Profile Session => ServiceProvider.Instance.Profile;
         public ValueItemCollection Variables { get; set; }
 
-        public int Brightness
-        {
-            get { return Variables.GetInt("Brightness"); }
-            set
-            {
-                Variables["Brightness"] = value;
+        public int Brightness => Variables.GetInt("Brightness");
 
-            }
-        }
+        public int Saturation => Variables.GetInt("Saturation");
 
-        public int Saturation
-        {
-            get { return Variables.GetInt("Saturation"); }
-            set
-            {
-                Variables["Saturation"] = value;
+        public int Hue => Variables.GetInt("Hue");
 
-            }
-        }
+        public int ContrastValue => Variables.GetInt("Contrast");
 
-        public int Hue
-        {
-            get { return Variables.GetInt("Hue"); }
-            set
-            {
-                Variables["Hue"] = value;
-            }
-        }
+        public bool Normalize => Variables.GetBool("Normalize");
 
-        public int ContrastValue
-        {
-            get { return Variables.GetInt("Contrast"); }
-            set
-            {
-                Variables["Contrast"] = value;
-            }
-        }
+        public int BlackPoint => Variables.GetInt("BlackPoint");
 
-        public bool Normalize
-        {
-            get { return Variables.GetBool("Normalize"); }
-            set
-            {
-                Variables["Normalize"] = value;
-            }
-        }
+        public int WhitePoint => Variables.GetInt("WhitePoint", 100);
+
+        public int MidPoint => Variables.GetInt("MidPoint");
+
+        public bool AutoLevel => Variables.GetBool("AutoLevel");
 
 
         public IMagickImage Execute(IMagickImage image, ValueItemCollection values)
@@ -66,16 +37,29 @@ namespace digiCamControl.LightBox.Plugins.Adjust
                 image.BrightnessContrast(new Percentage(Brightness), new Percentage(ContrastValue));
             if (Saturation != 0 || Hue != 0)
                 image.Modulate(new Percentage(100), new Percentage(Saturation + 100), new Percentage(Hue + 100));
+            if (AutoLevel)
+            {
+                image.AutoLevel(Channels.All);
+            }
+            else
+            {
+                if (BlackPoint != 0 || WhitePoint != 100 || MidPoint != 0)
+                {
+                    var midpoint = 1.0;
+                    if (MidPoint < 0)
+                    {
+                        midpoint = -MidPoint / 10.0;
+                        midpoint++;
+                    }
+                    if (MidPoint > 0)
+                    {
+                        midpoint = (100 - MidPoint) / 100.0;
+                    }
+                    image.Level(new Percentage(BlackPoint), new Percentage(WhitePoint), midpoint);
+                }
+            }
             return image;
         }
 
-        public void Reset()
-        {
-            Brightness = 0;
-            Saturation = 0;
-            Hue = 0;
-            ContrastValue = 0;
-            Normalize = false;
-        }
     }
 }

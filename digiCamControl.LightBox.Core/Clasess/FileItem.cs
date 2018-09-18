@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using ImageMagick;
@@ -17,6 +18,9 @@ namespace digiCamControl.LightBox.Core.Clasess
         public int ImageNumber { get; set; }
         public bool ReloadRequired { get; set; }
         public DateTime DateTime { get; set; }
+
+        [JsonIgnore]
+        public PointCollection LuminanceHistogramPoints { get; set; }
         
         public ValueItemCollection Variables { get; set; }
 

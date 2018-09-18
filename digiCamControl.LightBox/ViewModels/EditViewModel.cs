@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CameraControl.Devices;
 using digiCamControl.LightBox.Core.Clasess;
@@ -19,7 +20,7 @@ using ImageMagick;
 
 namespace digiCamControl.LightBox.ViewModels
 {
-    public class EditViewModel:ViewModelBase, IInit
+    public class EditViewModel : ViewModelBase, IInit
     {
         private bool _loadInProgress;
         private bool _loadRequest;
@@ -54,19 +55,20 @@ namespace digiCamControl.LightBox.ViewModels
             set
             {
                 //_selectedItem?.Variables.CopyFrom(Session.Variables);
-                _selectedItem = value;
-                RaisePropertyChanged(() => SelectedItem);
 
-                if (SelectedItem != null)
+                if (value != null)
                 {
+                    _selectedItem = value;
+                    RaisePropertyChanged(() => SelectedItem);
+
                     ServiceProvider.Instance.OnMessage(Messages.ItemChanged, null, _selectedItem);
                     EditIsEnabled = true;
-                   // Session.Variables.CopyFrom(SelectedItem.Variables);
+                    // Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
                 }
                 else
                 {
-                    EditIsEnabled = false;
+                    //EditIsEnabled = false;
                 }
             }
         }
@@ -167,7 +169,7 @@ namespace digiCamControl.LightBox.ViewModels
         public RelayCommand NextCommand { get; set; }
         public RelayCommand ApplyAllCommand { get; set; }
         public RelayCommand SetDefaultCommand { get; set; }
-        
+
         public EditViewModel()
         {
             BackCommand = new RelayCommand(Back);
@@ -175,7 +177,7 @@ namespace digiCamControl.LightBox.ViewModels
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             ApplyAllCommand = new RelayCommand(ApplyAll);
             SetDefaultCommand = new RelayCommand(SetDefault);
-            PanelItems = new List<IPanelItem> {new ContrastPanel(), new RemoveBackgroundPanel()};
+            PanelItems = new List<IPanelItem> { new ContrastPanel(), new RemoveBackgroundPanel() };
         }
 
         private void SetDefault()
@@ -238,7 +240,7 @@ namespace digiCamControl.LightBox.ViewModels
         {
             try
             {
-                Stopwatch wach=new Stopwatch();
+                Stopwatch wach = new Stopwatch();
                 wach.Start();
                 force = item.ReloadRequired || force;
                 if (File.Exists(item.TempFile))
@@ -276,6 +278,31 @@ namespace digiCamControl.LightBox.ViewModels
                         {
                             image = plugin.Execute(image, item.Variables);
                         }
+
+                        var Blue = new int[256];
+                        var Green = new int[256];
+                        var Red = new int[256];
+                        var Luminance = new int[256];
+                        Dictionary<MagickColor, int> h = image.Histogram();
+                        foreach (var i in h)
+                        {
+                            byte R = i.Key.R;
+                            byte G = i.Key.G;
+                            byte B = i.Key.B;
+                            Blue[B] += i.Value;
+                            Green[G] += i.Value;
+                            Red[R] += i.Value;
+                            int lum = (R + R + R + B + G + G + G + G) >> 3;
+                            Luminance[lum] += i.Value;
+                        }
+                        //fileInfo.HistogramBlue = Blue;
+                        //fileInfo.HistogramGreen = Green;
+                        //fileInfo.HistogramRed = Red;
+                        item.LuminanceHistogramPoints = ConvertToPointCollection(Luminance);
+                        //fileInfo.IsLoading = false;
+                        //item.FileInfo = fileInfo;
+
+
                         MagickGeometry geometry = new MagickGeometry(1090, 0);
                         geometry.IgnoreAspectRatio = false;
 
@@ -300,11 +327,58 @@ namespace digiCamControl.LightBox.ViewModels
                     Console.WriteLine(wach.Elapsed);
                 }
                 item.IsBusy = false;
+                RaisePropertyChanged(() => SelectedItem);
             }
             catch (Exception e)
             {
                 Log.Debug("Unable to load image", e);
             }
+        }
+
+        public static PointCollection ConvertToPointCollection(int[] values)
+        {
+            PointCollection points = new PointCollection();
+            if (values == null)
+            {
+                points.Freeze();
+                return points;
+            }
+
+            //values = SmoothHistogram(values);
+
+            int max = values.Max();
+
+
+            // first point (lower-left corner)
+            points.Add(new Point(0, max));
+            // middle points
+            for (int i = 0; i < values.Length; i++)
+            {
+                points.Add(new Point(i, max - values[i]));
+            }
+            // last point (lower-right corner)
+            points.Add(new Point(values.Length - 1, max));
+            points.Freeze();
+            return points;
+        }
+
+        private static int[] SmoothHistogram(int[] originalValues)
+        {
+            int[] smoothedValues = new int[originalValues.Length];
+
+            double[] mask = new double[] { 0.25, 0.5, 0.25 };
+
+            for (int bin = 1; bin < originalValues.Length - 1; bin++)
+            {
+                double smoothedValue = 0;
+                for (int i = 0; i < mask.Length; i++)
+                {
+                    smoothedValue += originalValues[bin - 1 + i] * mask[i];
+                }
+                smoothedValues[bin] = (int)smoothedValue;
+            }
+
+            return smoothedValues;
         }
 
         public void Init()
@@ -318,7 +392,7 @@ namespace digiCamControl.LightBox.ViewModels
             }
             if (PanelItems.Count > 0)
                 ExecuteItem(PanelItems[0]);
-            Task.Factory.StartNew(()=>LoadImageThumbs(false));
+            Task.Factory.StartNew(() => LoadImageThumbs(false));
         }
 
         private void LoadImageThumbs(bool fast)
@@ -347,7 +421,7 @@ namespace digiCamControl.LightBox.ViewModels
             }
             catch (Exception e)
             {
-                Log.Error("Unable to load image ",e);
+                Log.Error("Unable to load image ", e);
             }
             ServiceProvider.Instance.OnMessage(Messages.ClearBusy);
         }
@@ -364,9 +438,9 @@ namespace digiCamControl.LightBox.ViewModels
             switch (message.Message)
             {
                 case Messages.RefreshThumb:
-                {
-                    Task.Factory.StartNew(ReloadImages);
-                }
+                    {
+                        Task.Factory.StartNew(ReloadImages);
+                    }
                     break;
             }
         }
@@ -399,10 +473,10 @@ namespace digiCamControl.LightBox.ViewModels
                 item.ReloadRequired = true;
             }
             _loadInProgress = true;
-         //   SelectedItem.Variables.CopyFrom(Session.Variables);
+            //   SelectedItem.Variables.CopyFrom(Session.Variables);
             LoadImage(SelectedItem, true);
             if (_loadRequest)
-                LoadImage(SelectedItem,true);
+                LoadImage(SelectedItem, true);
             _loadInProgress = false;
             _loadRequest = false;
         }

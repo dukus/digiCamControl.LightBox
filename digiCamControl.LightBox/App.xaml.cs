@@ -23,6 +23,7 @@ namespace digiCamControl.LightBox
                 ServiceProvider.Instance.AdjustPlugins.Add(new Contrast());
                 ServiceProvider.Instance.AdjustPlugins.Add(new RemoveBackground());
                 ServiceProvider.Instance.ExportPlugins.Add(new CopyPlugin());
+                ServiceProvider.Instance.ExportPlugins.Add(new FtpPlugin());
             }
             catch (Exception exception)
             {

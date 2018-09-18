@@ -26,6 +26,7 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
                 ExportItem.Variables["FileNameTemplate"] = value;
             }
         }
+
         public CopyPluginViewModel()
         {
             ExportItem = new ExportItem();

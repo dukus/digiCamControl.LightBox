@@ -66,6 +66,18 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
             }
         }
 
+        public bool AutoGamma
+        {
+            get { return FileItem.Variables.GetBool("AutoGamma"); }
+            set
+            {
+                FileItem.Variables["AutoGamma"] = value;
+                RaisePropertyChanged();
+                ServiceProvider.Instance.OnMessage(Messages.RefreshThumb);
+            }
+        }
+
+
         public int BlackPoint
         {
             get { return FileItem.Variables.GetInt("BlackPoint"); }

@@ -19,6 +19,8 @@ namespace digiCamControl.LightBox.Plugins.Adjust
 
         public bool Normalize => Variables.GetBool("Normalize");
 
+        public bool AutoGamma => Variables.GetBool("AutoGamma");
+
         public int BlackPoint => Variables.GetInt("BlackPoint");
 
         public int WhitePoint => Variables.GetInt("WhitePoint", 100);
@@ -33,6 +35,9 @@ namespace digiCamControl.LightBox.Plugins.Adjust
             Variables = values;
             if (Normalize)
                 image.Normalize();
+            if (AutoGamma)
+                image.AutoGamma();
+
             if (Brightness != 0 || ContrastValue != 0)
                 image.BrightnessContrast(new Percentage(Brightness), new Percentage(ContrastValue));
             if (Saturation != 0 || Hue != 0)

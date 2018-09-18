@@ -25,7 +25,8 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="4">
-            <CheckBox IsChecked="{Binding Normalize}" Content="Normalize"/>
+            <CheckBox IsChecked="{Binding Normalize}" Content="Normalize" Margin="4"/>
+            <CheckBox IsChecked="{Binding AutoGamma}" Content="Auto Gamma" Margin="4"/>
             <TextBlock Text="Brightness"  Margin="4"/>
             <Slider  Margin="4" Value="{Binding Brightness}" Minimum="-100" Maximum="100" AutoToolTipPlacement="TopLeft"/>
             <TextBlock Text="Contrast"  Margin="4"/>

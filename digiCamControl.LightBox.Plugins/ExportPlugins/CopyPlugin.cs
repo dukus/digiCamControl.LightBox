@@ -26,11 +26,8 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
             ExportItem = item;
             IMagickImage magickImage = null;
             Smart.Default.Settings.ConvertCharacterStringLiterals = false;
-            Dictionary<string, object> values = new Dictionary<string, object>();
-            values.Add("ImageNumber", fileItem.ImageNumber);
-            values.Add("SessionName", profile.SessionName);
-            values.Add("SessionCounter", profile.SessionCounter);
-            string outFilename = Smart.Format(FileNameTemplate, values);
+
+            string outFilename = Smart.Format(FileNameTemplate, GetFormatValues(item, fileItem, profile));
             if (string.IsNullOrWhiteSpace(Path.GetExtension(outFilename)))
                 outFilename += ".jpg";
             outFilename = Path.Combine(Folder, outFilename);
@@ -41,35 +38,14 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
             Utils.WaitForFile(fileItem.TempFile);
             try
             {
-                switch (ImageSource)
-                {
-                    // original
-                    case 0:
-                        if (!Resize)
-                        {
-                            File.Copy(fileItem.TempFile,outFilename);
-                            return true;
-                        }
-                        magickImage = new MagickImage(fileItem.TempFile); 
-                        break;
-                    // edited
-                    case 1:
-                        magickImage = new MagickImage(fileItem.TempFile);
-                        magickImage = ServiceProvider.Instance.PreAdjustPlugins.Aggregate(magickImage, (current, plugin) => plugin.Execute(current, profile.Variables));
-                        magickImage = ServiceProvider.Instance.AdjustPlugins.Aggregate(magickImage, (current, plugin) => plugin.Execute(current, fileItem.Variables));
-                        break;
-                    // combined
-                    case 2:
-                        break;
 
+                if (ImageSource == 0 && !Resize)
+                {
+                    File.Copy(fileItem.TempFile, outFilename);
+                    return true;
                 }
 
-                if (Resize)
-                {
-                    MagickGeometry geometry = new MagickGeometry(Width, Height);
-                    geometry.IgnoreAspectRatio = false;
-                    magickImage.Resize(geometry);
-                }
+                magickImage = GetImage(item, fileItem, profile);
                 magickImage.Write(outFilename);
             }
             catch (Exception e)
@@ -82,7 +58,7 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
 
         public ContentControl GetConfig(ExportItem item)
         {
-            return new CopyPluginView {DataContext = new CopyPluginViewModel(item)};
+            return new CopyPluginView { DataContext = new CopyPluginViewModel(item) };
         }
 
         public ExportItem GetDefault()

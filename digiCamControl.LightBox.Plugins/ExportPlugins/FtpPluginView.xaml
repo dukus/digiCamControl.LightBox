@@ -34,7 +34,7 @@
                 <TextBox Text="{Binding FtpServer}" materialDesign:HintAssist.Hint="Ftp Server"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" HorizontalAlignment="Stretch"/>
             </DockPanel>
             <TextBox Text="{Binding FtpUser}" materialDesign:HintAssist.Hint="User Name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" HorizontalAlignment="Stretch"/>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="4">
                 <TextBlock Text="Password" VerticalAlignment="Center" Margin="4"/>
                 <controls:BindablePasswordBox Password="{Binding FtpPass}" Margin="4" HorizontalAlignment="Stretch" Width="430"/>
             </StackPanel>

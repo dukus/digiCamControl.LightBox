@@ -15,6 +15,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string ProfileFolder { get; set; }
         public string OverlayFolder { get; set; }
         public string CameraProfileFolder { get; set; }
+        public string CacheFolder { get; set; }
 
         public Settings()
         {
@@ -22,6 +23,7 @@ namespace digiCamControl.LightBox.Core.Clasess
                 ServiceProvider.AppName);
             AppFolder = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             ProfileFolder = Path.Combine(DataFolder, "Profiles");
+            CacheFolder = Path.Combine(DataFolder, "Cache");
             CameraProfileFolder = Path.Combine(DataFolder, "Cameras");
             TempFolder = Path.Combine(DataFolder, "Temp");
             OverlayFolder = Path.Combine(AppFolder, "Overlays");

@@ -62,6 +62,7 @@ namespace digiCamControl.LightBox.Core.Clasess
                 Log.Debug("Application version : " + Assembly.GetEntryAssembly().GetName().Version);
                 Directory.CreateDirectory(Settings.Instance.ProfileFolder);
                 Directory.CreateDirectory(Settings.Instance.CameraProfileFolder);
+                Directory.CreateDirectory(Settings.Instance.CacheFolder);
             }
             catch { }
         }

@@ -36,10 +36,10 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
 
         public string FtpPass
         {
-            get { return Encoding.UTF8.GetString(Convert.FromBase64String(ExportItem.Variables.GetString("FtpUser"))); }
+            get { return Encoding.UTF8.GetString(Convert.FromBase64String(ExportItem.Variables.GetString("FtpPass"))); }
             set
             {
-                ExportItem.Variables["FtpUser"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(value)) ;
+                ExportItem.Variables["FtpPass"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(value)) ;
             }
         }
 
@@ -76,7 +76,8 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
             SetBaseDefault();
             FtpPort = 22;
             FtpFolder = "/";
-            FileNameTemplate = "{SessionName}/{SessionCounter:D4}/DSC_{ImageNumber:D4}.jpg";
+            FileNameTemplate = "DSC_{ImageNumber:D4}.jpg";
+            FtpFolder = "/{SessionName}/{SessionCounter:D4}/";
         }
     }
 }

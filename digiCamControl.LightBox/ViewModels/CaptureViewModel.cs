@@ -54,7 +54,7 @@ namespace digiCamControl.LightBox.ViewModels
             set
             {
                 _panelControl = value;
-                RaisePropertyChanged(()=>PanelControl);
+                RaisePropertyChanged(() => PanelControl);
             }
         }
 
@@ -63,13 +63,13 @@ namespace digiCamControl.LightBox.ViewModels
             get { return _selectedItem; }
             set
             {
-              //  _selectedItem?.Variables.CopyFrom(Session.Variables);
+                //  _selectedItem?.Variables.CopyFrom(Session.Variables);
                 _selectedItem = value;
                 RaisePropertyChanged(() => SelectedItem);
 
                 if (SelectedItem != null)
                 {
-                  //  Session.Variables.CopyFrom(SelectedItem.Variables);
+                    //  Session.Variables.CopyFrom(SelectedItem.Variables);
                     LoadImage(SelectedItem);
                 }
             }
@@ -105,29 +105,29 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropX
         {
-            get { return Session.Variables.GetInt("CropX",400); }
+            get { return Session.Variables.GetInt("CropX", 400); }
             set
             {
                 Session.Variables["CropX"] = value;
-                RaisePropertyChanged(()=>CropX);
-                RaisePropertyChanged(()=>CropRect);
+                RaisePropertyChanged(() => CropX);
+                RaisePropertyChanged(() => CropRect);
             }
         }
 
         public int CropWidth
         {
-            get { return Session.Variables.GetInt("CropWidth",200); }
+            get { return Session.Variables.GetInt("CropWidth", 200); }
             set
             {
                 Session.Variables["CropWidth"] = value;
-                RaisePropertyChanged(()=>CropWidth);
+                RaisePropertyChanged(() => CropWidth);
                 RaisePropertyChanged(() => CropRect);
             }
         }
 
         public int CropY
         {
-            get { return Session.Variables.GetInt("CropY",400); }
+            get { return Session.Variables.GetInt("CropY", 400); }
             set
             {
                 Session.Variables["CropY"] = value;
@@ -138,7 +138,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public int CropHeight
         {
-            get { return Session.Variables.GetInt("CropHeight",200); }
+            get { return Session.Variables.GetInt("CropHeight", 200); }
             set
             {
                 Session.Variables["CropHeight"] = value;
@@ -189,7 +189,7 @@ namespace digiCamControl.LightBox.ViewModels
         public RelayCommand NextCommand { get; set; }
 
         public RelayCommand DeleteAllCommand { get; set; }
-
+        public RelayCommand<FileItem> DeleteCommand { get; set; }
 
         public CaptureViewModel()
         {
@@ -207,7 +207,22 @@ namespace digiCamControl.LightBox.ViewModels
             BackCommand = new RelayCommand(Back);
             NextCommand = new RelayCommand(Next);
             DeleteAllCommand = new RelayCommand(DeleteAll);
+            DeleteCommand = new RelayCommand<FileItem>(Delete);
             ExecuteItem(PanelItems[1]);
+
+        }
+
+        private void Delete(FileItem obj)
+        {
+            if (SelectedItem == obj)
+            {
+                var i = Session.Files.IndexOf(obj) - 1;
+                if (i < 0)
+                    i = 0;
+                SelectedItem = Session.Files.Count > 0 ? Session.Files[i] : null;
+            }
+            Session.Files.Remove(obj);
+            obj.CleanUp();
         }
 
         private void DeleteAll()
@@ -223,7 +238,7 @@ namespace digiCamControl.LightBox.ViewModels
         private void Next()
         {
             Session.Save();
-            ServiceProvider.Instance.OnMessage(Messages.ChangeLayout,null, ViewEnum.Adjust);
+            ServiceProvider.Instance.OnMessage(Messages.ChangeLayout, null, ViewEnum.Adjust);
         }
 
         private void Back()
@@ -265,7 +280,7 @@ namespace digiCamControl.LightBox.ViewModels
                         {
                             string fileName = Path.Combine(Settings.Instance.TempFolder,
                                 Path.GetRandomFileName() + ".jpg");
-                            MagickGeometry geometry=new MagickGeometry(1090,0);
+                            MagickGeometry geometry = new MagickGeometry(1090, 0);
                             geometry.IgnoreAspectRatio = false;
                             image.Sample(geometry);
                             image.Write(fileName);
@@ -281,7 +296,7 @@ namespace digiCamControl.LightBox.ViewModels
             }
             catch (Exception e)
             {
-                Log.Debug("Unable to load image",e);
+                Log.Debug("Unable to load image", e);
             }
         }
 
@@ -292,32 +307,32 @@ namespace digiCamControl.LightBox.ViewModels
                 switch (message.Message)
                 {
                     case Messages.ImageCaptured:
-                    {
-                        FileItem item = new FileItem(message.ParamString);
-                        item.Variables.CopyFrom(Session.Variables);
-                        Session.Files.Add(item);
-                        SelectedItem = item;
-                    }
+                        {
+                            FileItem item = new FileItem(message.ParamString);
+                            item.Variables.CopyFrom(Session.Variables);
+                            Session.Files.Add(item);
+                            SelectedItem = item;
+                        }
                         break;
                     case Messages.StopLiveView:
-                    {
-                        StopLiveViewThread();
-                    }
+                        {
+                            StopLiveViewThread();
+                        }
                         break;
                     case Messages.StartLiveView:
-                    {
-                        StartLiveViewThread();
-                    }
+                        {
+                            StartLiveViewThread();
+                        }
                         break;
                     case Messages.PauseLiveView:
-                    {
-                        _isLiveViewPaused = true;
-                    }
+                        {
+                            _isLiveViewPaused = true;
+                        }
                         break;
                     case Messages.ResumeLiveView:
-                    {
-                        _isLiveViewPaused = false;
-                    }
+                        {
+                            _isLiveViewPaused = false;
+                        }
                         break;
                 }
             }
@@ -362,7 +377,7 @@ namespace digiCamControl.LightBox.ViewModels
         }
 
 
-        public  void StartLiveView()
+        public void StartLiveView()
         {
             try
             {
@@ -446,7 +461,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public virtual void StopLiveView()
         {
-            if(!_Livetimer.IsEnabled)
+            if (!_Livetimer.IsEnabled)
                 return;
             Task.Factory.StartNew(StopLiveViewThread);
         }
@@ -558,7 +573,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         private void DeviceManager_CameraSelected(ICameraDevice oldcameraDevice, ICameraDevice newcameraDevice)
         {
-            if(newcameraDevice!=null && newcameraDevice.IsConnected)
+            if (newcameraDevice != null && newcameraDevice.IsConnected)
                 StartLiveView();
         }
 

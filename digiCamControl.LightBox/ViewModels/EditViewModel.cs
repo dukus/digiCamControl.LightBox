@@ -169,6 +169,8 @@ namespace digiCamControl.LightBox.ViewModels
         public RelayCommand NextCommand { get; set; }
         public RelayCommand ApplyAllCommand { get; set; }
         public RelayCommand SetDefaultCommand { get; set; }
+        public RelayCommand<FileItem> DeleteCommand { get; set; }
+        
 
         public EditViewModel()
         {
@@ -178,6 +180,20 @@ namespace digiCamControl.LightBox.ViewModels
             ApplyAllCommand = new RelayCommand(ApplyAll);
             SetDefaultCommand = new RelayCommand(SetDefault);
             PanelItems = new List<IPanelItem> { new ContrastPanel(), new RemoveBackgroundPanel() };
+            DeleteCommand=new RelayCommand<FileItem>(Delete);
+        }
+
+        private void Delete(FileItem obj)
+        {
+            if (SelectedItem == obj)
+            {
+                var i = Session.Files.IndexOf(obj)-1;
+                if (i < 0)
+                    i = 0;
+                SelectedItem = Session.Files.Count > 0 ? Session.Files[i] : null;
+            }
+            Session.Files.Remove(obj);
+            obj.CleanUp();
         }
 
         private void SetDefault()

@@ -19,9 +19,17 @@ namespace digiCamControl.LightBox.Core.Clasess
 
         public Settings()
         {
-            DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                ServiceProvider.AppName);
             AppFolder = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            if (Directory.Exists(Path.Combine(AppFolder, "UserData")))
+            {
+                DataFolder = Path.Combine(AppFolder, "UserData");
+            }
+            else
+            {
+                DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                    ServiceProvider.AppName);
+            }
+
             ProfileFolder = Path.Combine(DataFolder, "Profiles");
             CacheFolder = Path.Combine(DataFolder, "Cache");
             CameraProfileFolder = Path.Combine(DataFolder, "Cameras");

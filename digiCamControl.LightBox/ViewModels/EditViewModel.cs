@@ -169,8 +169,11 @@ namespace digiCamControl.LightBox.ViewModels
         public RelayCommand NextCommand { get; set; }
         public RelayCommand ApplyAllCommand { get; set; }
         public RelayCommand SetDefaultCommand { get; set; }
+        public RelayCommand ViewFullSizeCommand { get; set; }
+
+
         public RelayCommand<FileItem> DeleteCommand { get; set; }
-        
+
 
         public EditViewModel()
         {
@@ -179,8 +182,49 @@ namespace digiCamControl.LightBox.ViewModels
             ItemCommand = new RelayCommand<IPanelItem>(ExecuteItem);
             ApplyAllCommand = new RelayCommand(ApplyAll);
             SetDefaultCommand = new RelayCommand(SetDefault);
-            PanelItems = new List<IPanelItem> { new ContrastPanel(), new RemoveBackgroundPanel() };
-            DeleteCommand=new RelayCommand<FileItem>(Delete);
+            ViewFullSizeCommand = new RelayCommand(()=>Task.Factory.StartNew(ViewFullSize));
+            PanelItems = new List<IPanelItem> {new ContrastPanel(), new RemoveBackgroundPanel()};
+            DeleteCommand = new RelayCommand<FileItem>(Delete);
+        }
+
+        private void ViewFullSize()
+        {
+            var item = SelectedItem;
+            if (item == null)
+                return;
+            ServiceProvider.Instance.OnMessage(Messages.SetBusy, "Processing  image ...");
+            try
+            {
+                IMagickImage image = new MagickImage(item.TempFile);
+                foreach (var plugin in ServiceProvider.Instance.PreAdjustPlugins)
+                {
+                    image = plugin.Execute(image, Session.Variables);
+                }
+                foreach (var plugin in ServiceProvider.Instance.AdjustPlugins)
+                {
+                    image = plugin.Execute(image, item.Variables);
+                }
+                var bitmap = image.ToBitmapSource();
+                bitmap.Freeze();
+
+
+
+                item.IsBusy = false;
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ServiceProvider.Instance.OnMessage(Messages.ClearBusy);
+                    Fullscreen wnd = new Fullscreen();
+                    wnd.Image.Source = bitmap;
+                    wnd.ShowDialog();
+
+                }));
+            }
+            catch (Exception e)
+            {
+                ServiceProvider.Instance.OnMessage(Messages.StatusMessage, "Image processing error");
+                Log.Debug("Image processing error", e);
+            }
+            ServiceProvider.Instance.OnMessage(Messages.ClearBusy);
         }
 
         private void Delete(FileItem obj)

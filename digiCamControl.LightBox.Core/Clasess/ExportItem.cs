@@ -12,6 +12,7 @@ namespace digiCamControl.LightBox.Core.Clasess
         public string Name { get; set; }
         public string Id { get; set; }
         public string Icon { get; set; }
+        public bool IsOpen { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
@@ -39,15 +40,19 @@ namespace digiCamControl.LightBox.Core.Clasess
         public ExportItem()
         {
             Variables = new ValueItemCollection();
+            IsOpen = true;
         }
 
         public ExportItem Clone()
         {
-            var res = new ExportItem();
-            res.Icon = this.Icon;
-            res.Id = this.Id;
+            var res = new ExportItem
+            {
+                Icon = this.Icon,
+                Id = this.Id,
+                Name = this.Name,
+                IsOpen = this.IsOpen
+            };
             res.Variables.CopyFrom(this.Variables);
-            res.Name = this.Name;
             return res;
         }
     }

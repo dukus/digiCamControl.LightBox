@@ -199,6 +199,9 @@
     <Compile Include="Views\ExportView.xaml.cs">
       <DependentUpon>ExportView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Fullscreen.xaml.cs">
+      <DependentUpon>Fullscreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StartView.xaml.cs">
       <DependentUpon>StartView.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ExportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Fullscreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -289,6 +296,10 @@
     <ProjectReference Include="..\digiCamControl.LightBox.Plugins\digiCamControl.LightBox.Plugins.csproj">
       <Project>{9C0CF854-A57E-4A47-A92F-8FBBF2B4A5FB}</Project>
       <Name>digiCamControl.LightBox.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZoomAndPanControl\ZoomAndPan.csproj">
+      <Project>{468adede-6f5e-40c0-99c9-c6dac4fac934}</Project>
+      <Name>ZoomAndPan</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

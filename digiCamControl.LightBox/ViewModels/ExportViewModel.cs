@@ -121,7 +121,7 @@ namespace digiCamControl.LightBox.ViewModels
 
         public void UnInit()
         {
-            
+            Profile.Save();
         }
     }
 }

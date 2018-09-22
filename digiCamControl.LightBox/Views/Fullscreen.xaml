@@ -1,0 +1,15 @@
+﻿<Window x:Class="digiCamControl.LightBox.Views.Fullscreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:digiCamControl.LightBox.Views"
+        xmlns:zoomAndPan="clr-namespace:ZoomAndPan;assembly=ZoomAndPan"
+        mc:Ignorable="d"
+        Title="Fullscreen" Height="300" Width="300" WindowState="Maximized" Loaded="Fullscreen_OnLoaded">
+    <Grid>
+        <zoomAndPan:ZoomAndPanControl Name="ZoomAndPanControl">
+            <Image Name="Image" Stretch="Uniform"/>
+        </zoomAndPan:ZoomAndPanControl>
+    </Grid>
+</Window>

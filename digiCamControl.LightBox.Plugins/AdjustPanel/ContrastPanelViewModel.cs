@@ -143,6 +143,7 @@ namespace digiCamControl.LightBox.Plugins.AdjustPanel
             Contrast = 0;
             Normalize = false;
             AutoLevel = false;
+            AutoGamma = false;
             BlackPoint = 0;
             WhitePoint = 100;
             MidPoint = 0;

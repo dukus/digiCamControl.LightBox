@@ -90,7 +90,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Text="{Binding Profile.SessionName}" materialDesign:HintAssist.Hint="Session name"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="3,7,5,1" Grid.Row="0"/>
                             <TextBox Text="{Binding Profile.SessionCounter}" materialDesign:HintAssist.Hint="Session Counter"  Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="4" Grid.Row="0" Grid.Column="1" />
-                            <ComboBox Grid.Column="2" ItemsSource="{Binding CameraProfiles}" SelectedItem="{Binding CameraProfile}" materialDesign:HintAssist.Hint="Camera profile"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch" DisplayMemberPath="Name"/>
+                            <ComboBox Grid.Column="2" ItemsSource="{Binding CameraProfiles}" SelectedItem="{Binding CameraProfile}" materialDesign:HintAssist.Hint="Camera profile"  Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="4" HorizontalAlignment="Stretch" DisplayMemberPath="Name"
+                                      ToolTip="New profile can be defined in capture window"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

@@ -85,6 +85,7 @@ namespace digiCamControl.LightBox.Plugins.ExportPlugins
         {
             Dictionary<string, object> values = new Dictionary<string, object>();
             values.Add("ImageNumber", fileItem.ImageNumber);
+            values.Add("CaptureDate", fileItem.DateTime);
             values.Add("SessionName", profile.SessionName);
             values.Add("SessionCounter", profile.SessionCounter);
             return values;
